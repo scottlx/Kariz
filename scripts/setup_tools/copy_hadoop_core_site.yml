@@ -1,0 +1,6 @@
+- hosts: hadoop
+  tasks:
+    - name: Copy hadoop hdfs-site.xml
+      copy:
+        src: /home/ubuntu/opt/hadoop-2.8.4/etc/hadoop/core-site.xml 
+        dest: /home/ubuntu/opt/hadoop-2.8.4/etc/hadoop/core-site.xml

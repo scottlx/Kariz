@@ -1,0 +1,6 @@
+- hosts: hadoop
+  tasks:
+    - name: Copy hadoop slaves
+      copy:
+        src: /home/ubuntu/opt/hadoop-2.8.4/etc/hadoop/slaves 
+        dest: /home/ubuntu/opt/hadoop-2.8.4/etc/hadoop/slaves

@@ -1,0 +1,22 @@
+- hosts: hadoop
+
+  tasks:
+  - name: Delete namenode folder
+    file:
+      path: /mnt/temp/data/dataNode
+      state: absent
+
+  - name: Delete namenode folder
+    file:
+      path: /mnt/temp/data/nameNode
+      state: absent
+
+  - name: Delete namenode folder
+    file:
+      path: /mnt/temp/nm-local-dir
+      state: absent
+
+  - name: Delete dfs folder
+    file:
+      path: /mnt/temp/dfs
+      state: absent

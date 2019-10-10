@@ -1,0 +1,6 @@
+- hosts: hadoop
+  tasks:
+    - name: Copy hadoop yarn-site.xml
+      copy:
+        src: /home/ubuntu/opt/hadoop-2.8.4/etc/hadoop/mapred-site.xml 
+        dest: /home/ubuntu/opt/hadoop-2.8.4/etc/hadoop/mapred-site.xml
