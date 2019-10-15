@@ -10,15 +10,15 @@ CP = 2
 class Entry:
     """Cache Entry DataClass"""
     # this should support ranges
-    def __init__(self, name, size=-1, score=0):
+    def __init__(self, name, size=0, score=0):
         self.parent_id = 0
         self.name = name
         self.size = size
         self.score = score
-        self.pscore = score/size
+        self.pscore = score/size if size else -1
         self.access_time = time.time()
-        self.refcount = 0
-        self.refjobs = {}
+        self.freq = 0
+        self.refdags= set()
         self.sscore = 0 #share score
         self.pin = 0 # whether it is pin or not
         self.mrd_distance = -1
@@ -48,12 +48,12 @@ class Entry:
     def __str__(self):
         return self.name + ":" + str(self.size)
     
-    def update_pscore(self):
-        if self.size > 0:
-            self.pscore = self.score/self.size
-            
+    def increment_freq(self):
+        self.freq += 1
+    
+    def update_pscore(self, score):
+        self.pscore = score if score > self.pscore else self.pscore
+        
     def touch(self):
         self.access_time = time.time()
         
-    def update_scores(self):
-        return 0

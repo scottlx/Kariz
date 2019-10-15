@@ -667,6 +667,18 @@ q17a.config_inputs(5, {'g': inputs['g']})
 graphs.append(q17a)
 graphs_dict['AQ17'] = q17a
 
+q1me = gr.Graph(3)
+q1me.add_edge(0, 2, 0)
+q1me.add_edge(1, 2, 0)
+q1me.static_runtime(0, 400, 240)
+q1me.static_runtime(1, 420, 320)
+q1me.static_runtime(2, 200, 100)
+q1me.config_inputs(0, {'a18': inputs['a18']})
+q1me.config_inputs(1, {'d6': inputs['d6']})
+q1me.config_inputs(2, {'a14': inputs['a14']})
+q1me.set_misestimated_jobs(np.array([0, 1, 1, 0, 1, 0]))
+graphs.append(q1me)
+graphs_dict['MEQ1'] = q1me
 
 '''
 q24 = Graph()

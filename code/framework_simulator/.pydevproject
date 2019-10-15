@@ -12,7 +12,7 @@
     <pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">Default</pydev_property>
     
     <pydev_pathproperty name="org.python.pydev.PROJECT_EXTERNAL_SOURCE_PATH">
-<path>/home/mania/Northeastern/MoC/papers/KARIZ/code/core</path>
 <path>/home/mania/anaconda3/lib/python3.6/site-packages</path>
+<path>/home/mania/Northeastern/MoC/Kariz/code</path>
 </pydev_pathproperty>
 </pydev_project>

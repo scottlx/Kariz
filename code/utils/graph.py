@@ -10,6 +10,7 @@ import uuid
 import utils.plan as plan
 import ast
 import utils.job as jb
+import numpy as np
 
 #Class to represent a graph 
 class Graph: 
@@ -20,15 +21,23 @@ class Graph:
         for i in range(0, n_vertices):
             self.jobs[i] = jb.Job(i)
         
+        self.misestimated_jobs = np.zeros(2*n_vertices)
+        
         self.roots = set(range(0, n_vertices))
         self.leaves = set(range(0, n_vertices))
         self.blevels = {}
         
         self.plans_container = None
-        self.orderedNodes = None
-        self.orderedLevels = None
         self.stages = {}
 
+    def reset(self):
+        for j in self.jobs:
+            job = self.jobs[j]
+            job.reset()
+        self.stages = {}
+        self.plans_container = None
+        self.blevels = {}    
+    
     def __str__(self):
         graph_str = '{ "jobs": ['
         for j in self.jobs:
@@ -42,7 +51,17 @@ class Graph:
     def add_new_job(self, value):
         self.jobs[self.n_vertices] = jb.Job(self.n_vertices)
         self.n_vertices+= 1
-   
+    
+    def set_misestimated_jobs(self, mse_jobs):
+        self.misestimated_jobs = mse_jobs;
+            
+    def config_misestimated_jobs(self, mse_factor): # mse_factor: miss estimation factor
+        for i in range(0, self.n_vertices):
+            if self.misestimated_jobs[i]:
+                self.jobs[i].est_runtime_remote += self.jobs[i].est_runtime_remote*mse_factor
+            if self.misestimated_jobs[i + self.n_vertices]:
+                self.jobs[i].est_runtime_cache += self.jobs[i].est_runtime_cache*mse_factor
+            self.jobs[i].est_partial_cached = self.jobs[i].est_runtime_remote 
     # Randomly assign time value to each node
     def random_runtime(self):
         for i in range(0, self.n_vertices):
@@ -196,8 +215,8 @@ class Graph:
                     t_imprv_tmp = int(plan.data[f]['size']*(j['job'].runtime_remote - j['job'].runtime_cache)/j['job'].inputs[f])
                     if t_imprv_tmp > t_imprv:
                         t_imprv = t_imprv_tmp
-        #    j['job'].est_runtime_remote = j['job'].runtime_remote - t_imprv #j['improvement']
-            j['job'].est_runtime_remote = j['job'].runtime_remote - j['improvement']
+            j['job'].final_runtime = j['job'].runtime_remote - t_imprv #j['improvement']
+            #j['job'].est_runtime_remote = j['job'].runtime_remote - j['improvement']
 
 
 def str_to_graph(raw_execplan, objectstore):
@@ -288,6 +307,7 @@ def jsonstr_to_graph(raw_execplan):
     for j in jobs:
         g.jobs[j['id']].id = j['id']
         g.jobs[j['id']].static_runtime(j['runtime_remote'], j['runtime_cache'])
+        g.jobs[j['id']].estimated_runtimes(j['est_runtime_remote'], j['est_runtime_cache'])
         g.jobs[j['id']].config_ntasks(j['num_task'])
         g.config_inputs(j['id'], j['inputs']) 
         for ch in j['children']:

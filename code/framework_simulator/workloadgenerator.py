@@ -170,6 +170,37 @@ class Workload:
                     i = i + 1
                 runtime = pigsim.start_pig_simulator(dag)
     
+    def start_single_dag_coldcache_misestimation(self):
+        stats = {"Kariz": {}, "RCP": {}, "PC": {}}
+        try:
+            with open('misestimation_result.json', 'r') as dumpf:
+                stats = json.load(dumpf)
+        except FileNotFoundError:
+                print("No stats available")
+        
+        mse_factors= [-0.5, -0.4, -0.3, -0.2, -0.1, -0.05, 0, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5]    
+        runtimes = stats["Kariz"]
+        for dag_id in self.dags:
+            if not dag_id.startswith('MEQ'): continue 
+            dag = self.dags[dag_id]
+            if dag_id not in runtimes:
+                runtimes[dag_id] = {}
+            
+            for msef in mse_factors:
+                print('Process:', dag_id, ', with mse_factor:', msef)
+                dag.reset()
+                dag.config_misestimated_jobs(mse_factor = msef)
+                runtime, rtl, dataset_inputs = pigsim.start_pig_simulator(dag)
+                
+                runtimes[dag_id][msef] = {'Cache': 'Kariz', 'DAG_id': dag_id, 'Runtime': runtime, 
+                                'runtime list': rtl, 'datasets': dataset_inputs,
+                                'lamda': msef}
+            print(Fore.GREEN, runtimes[dag_id], Style.RESET_ALL)
+        
+        with open('misestimation_result.json', 'w') as dumpf:    
+            json.dump(stats, dumpf)
+
+    
     def start_single_dag_coldcache_seqworkload(self):
         stats = {"Kariz": {}, "RCP": {}, "PC": {}, "MRD": {}}
         try:

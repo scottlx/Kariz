@@ -132,13 +132,13 @@ class Cache:
             if e.size < size:
                 return status.UNABLE_TO_CACHE
             e.touch()
-            e.update_scores()
+            e.update_pscore(score)
             self.workers[wid].pin_file(fname, e.size)
             return status.SUCCESS
         return status.FILE_NOT_FOUND
                         
                         
-    def cache_plan(self, data):
+    def cache_plan(self, data, score):
         revertables = {}
         for f in data:
             files = data[f]
@@ -147,30 +147,34 @@ class Cache:
                 wid = self.get_worker() # e.parent_id
                 if e.size < files['size']:
                     for f2 in data:
-                        self.workers[wid].unpin_file(f2)
-
-                    # un-pinned all pinned files by this plan
+                        self.workers[wid].unpin_file(f2, data[f2]['size'])
                     return status.UNABLE_TO_CACHE
-                e.touch()
-                e.update_scores()
                 self.workers[wid].pin_file(f, e.size)
             else:
-                # un-pinned all pinned files by this plan
                 wid = self.get_worker()
                 for f2 in data:
                     self.workers[wid].unpin_file(f2)
                 return status.UNABLE_TO_CACHE
+        
+        for f in data:
+            e = self.global_status[f]
+            e.touch()
+            e.increment_freq()
+            e.update_pscore(score)
+        
         return status.SUCCESS
         
     def clean_up(self, revertible):
         wid = self.get_worker() #e.parent_id
+        print('revertibles are', revertible)
         for r in revertible:
             self.workers[wid].kariz_revert_status(r, revertible[r]['osize'])
             if not revertible[r]['osize']:
                 del self.global_status[r]
-                
+            else:
+                self.global_status[r].size = revertible[r]['osize']    
         
-    def prefetch_plan(self, data):
+    def prefetch_plan(self, data, score):
         evicted = []
         revertible = {}
         for f in data:
@@ -180,7 +184,7 @@ class Cache:
                 wid = self.get_worker() #e.parent_id
                 if e.size < fd['size']:
                     old_size = e.size
-                    e, evf, pstatus = self.workers[wid].kariz_cache_file(f, fd['size']) #ce: cached entry
+                    e, evf, pstatus = self.workers[wid].kariz_cache_file(f, fd['size'], score) #ce: cached entry
                     evicted.extend(evf)
                     if pstatus != status.SUCCESS:
                         self.clean_up(revertible)
@@ -188,18 +192,22 @@ class Cache:
                     revertible[e.name] = {'osize': old_size, 'nsize': e.size}
             else:
                 wid = self.get_worker()
-                e, evf, pstatus = self.workers[wid].kariz_cache_file(f, fd['size']) #ce: cached entry
+                e, evf, pstatus = self.workers[wid].kariz_cache_file(f, fd['size'], score) #ce: cached entry
                 evicted.extend(evf)
                 if pstatus != status.SUCCESS:
                     self.clean_up(revertible)
                     return status.UNABLE_TO_CACHE
                 revertible[e.name] = {'osize': 0, 'nsize': e.size}
             self.global_status[f] = e
-            e.touch()
-            e.update_scores()
-            self.workers[wid].pin_file(f, e.size)   
+            
+            #self.workers[wid].pin_file(f, e.size)   
             for ce in evicted:
                 if ce in self.global_status: del self.global_status[ce]
+        for f in data:
+            e = self.global_status[f]
+            e.touch()
+            e.increment_freq()
+            e.update_pscore(score)
         return status.SUCCESS
 
     def evict(self, fname):

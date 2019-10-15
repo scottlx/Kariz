@@ -67,7 +67,7 @@ class DAGPlanner:
         current_stage = self.g.plans_container.stages[cur_stg_index]    
         
         if cur_stg_index != f_stg_index:
-            for stg in range(cur_stg_index + 1, f_stg_index): # loop over future stages plans
+            for stg in range(cur_stg_index + 1, len(self.g.stages)): # loop over future stages plans
                 if stg not in self.g.plans_container.cp_by_stage: continue
                 plans_in_stage = self.g.plans_container.cp_by_stage[stg]
                 feasible = 1
@@ -119,5 +119,4 @@ class DAGPlanner:
         for p in plans:
             for f in p.data:
                 p.sscore += stage_footprint[f]['access']
-            print('p.data', p.data)
             p.sscore = p.sscore/len(p.data) if len(p.data) > 0 else 0

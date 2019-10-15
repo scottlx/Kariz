@@ -42,11 +42,10 @@ class Mirab:
             return
         
         # while there is no cache space avaialbe or no space left in bw
-        for p in plans:
-            print("online planner: ", stage_id, p.data, p.type)
+        print("Plan new stage:", dag_id, stage_id)
         while len(plans) > 0:
-            print('len plans', len(plans))
-            plan = plans.pop()
+            plan = plans.pop(0)
+            print("Mirab selected plan", str(plan));
             if not plan.is_feasible():
                 continue
             if plan.type == 0:
@@ -54,7 +53,7 @@ class Mirab:
                     # for all priority plans larger than this priority on this stage mark them as infeasible
                     self.update_infeasible(plan)
                     continue
-                self.markas_pinned_datasets(p.dag_id, plan)
+                self.markas_pinned_datasets(plan.dag_id, plan)
             else:
                 if requester.prefetch_plan(plan) != status.SUCCESS:
                     # for all priority plans larger than this priority on this stage mark them as infeasible
@@ -68,7 +67,8 @@ class Mirab:
             self.compute_weighted_scores(plans)
             
     def update_planned_bandwidth(self, plan):
-       print('update_planned_bandwidth') 
+        print('update_planned_bandwidth')
+        return 0 
 
     def get_stage_plans(self, dag_id, stage):
         return self.dags[dag_id].plans_container.get_stage_plans(stage)

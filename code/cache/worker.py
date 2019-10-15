@@ -33,6 +33,8 @@ class Worker:
         self.mrd_table = {}
         self.mrd_table_bydistance = []
         
+        self.kariz_pscore_table = []
+        
         # lru related variables
         self.lru_head = None
         self.lru_end = None
@@ -70,19 +72,26 @@ class Worker:
             e.pin = 1
             self.pinned_space += e.size
             self.unpinned_space = self.size - self.pinned_space
+        else:
+            diff = size - e.size
+            self.pinned_space += diff
+            self.unpinned_space = self.size - self.pinned_space
+            
         return status.SUCCESS
         
         
-    def unpin_file(self, fname):
+    def unpin_file(self, fname, size=0):
         if fname not in self.status:
             return status.FILE_NOT_FOUND
         e = self.status[fname]
-        #print('unpin: ', fname, 'size', e.size, 'pinned:', e.pin, 'pinned space:', self.pinned_space, 'unpinned space:', self.unpinned_space)
         if e.pin > 0:
-            e.pin = 0
-            self.pinned_space -= e.size
+            if size >= e.size:
+                e.pin = 0
+            e.pscore = 0
+            e.freq = 0
+            self.pinned_space -= size
             self.unpinned_space = self.size - self.pinned_space
-
+            
     
     def evict_file(self, fname):
         if fname not in self.status:
@@ -173,20 +182,21 @@ class Worker:
     def kariz_eviction_candidates(self, size, score=0):
         candidates = {}
         candidate_size = 0
-        # FIXME: Do the search using redblack tree
-        for o in self.status:
-            e = self.status[o]
+        sorted_cache = sorted((e.pscore, k) for (k,e) in self.status.items())
+        while len(sorted_cache) > 0:
+            f = sorted_cache.pop(0)[1]
+            e = self.status[f]
+            if score < e.pscore: break
             if e.pin == 0:
-                candidates[o] = e
+                candidates[e.name] = e
                 candidate_size += e.size
-            if size <= candidate_size:
-                break          
-        return candidates, candidate_size
+            if size <= (self.free_space + candidate_size) : break
+        return candidates, candidate_size + self.free_space 
     
     
     def kariz_free(self, size, score=0):
         # FIXME: This function loops over candidates. It should first sort them by score before evicting them 
-        evicted_size = 0
+        evicted_size = self.free_space
         evicted = []
         
         if size <= 0:
@@ -205,30 +215,30 @@ class Worker:
             if size <= evicted_size:
                 return evicted_size, evicted, status.SUCCESS; 
         
-        
     #return codes: 0 successful, -2 no space left 
     def kariz_cache_file(self, fname, size, score=0):
         evicted = []
         if fname in self.status:
             e = self.status[fname]
         else:
-            e = entry.Entry(fname, size)
+            e = entry.Entry(fname)
             e.parent_id = self.id
         
-        if self.unpinned_space < size: # cannot cache the file /w size on this worker
+        if e.size > size:
+            return e, evicted, status.SUCCESS
+        
+        if self.unpinned_space < (size - e.size): # cannot cache the file /w size on this worker
             return None, evicted, status.NO_SPACE_LEFT
         
-        if self.free_space < size:
-            evicted_size, evicted, estatus = self.kariz_free(e.size)
+        if self.free_space < (size - e.size):
+            evicted_size, evicted, estatus = self.kariz_free((size - e.size), score)
             if  estatus != status.SUCCESS:
                 return None, evicted, estatus
-
+        oldsize = e.size
         e.size = size
-        self.addto_used_space(size)
-        e.update_pscore()
-        e.touch()
+        self.addto_used_space(size - oldsize)
         self.status[fname] = e
-        self.pin_file(fname, size)
+#        self.pin_file(fname, size - oldsize)
         return e, evicted, status.SUCCESS
         
     ###### LRUs #################################
@@ -304,16 +314,16 @@ class Worker:
     def kariz_revert_status(self, fname, oldsize):
         if fname not in self.status:
             return
-        self.unpin_file(fname)
-        if not oldsize:
-            self.evict_file(fname)
-            return
-        e = self.status[fname]
-        
+        e = self.status[fname]        
         diff = e.size - oldsize
         if diff <= 0:
             return
-        e.size = diff
+
+        self.unpin_file(fname, diff)
+        if not oldsize:
+            self.evict_file(fname)
+            return
+        e.size = oldsize
         self.addto_free_space(diff)
         
     

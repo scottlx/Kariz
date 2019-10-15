@@ -24,7 +24,6 @@ def start_pig_simulator(v):
     req.submit_new_dag(v)
     req.notify_stage_start(v, -1)
     if cache == KARIZ:
-        print('Kariz')
         v.plans_container = pig.build_kariz_priorities(v)
     elif cache == MRD:
         v.plans_container = pig.build_mrd_priorities(v)

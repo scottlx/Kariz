@@ -24,17 +24,22 @@ def get_token():
 
 
 def prefetch_object(token, bucket_name, obj_name, s_off, e_off):
-    local_p = subprocess.Popen(["curl -i http://%s:%d/swift/v1/%s/%s -X GET -H \"range: bytes=%d-%d\" -H \"KARIZ_PREFETCH: Hello\" -H \"X-Auth-Token: %s\" -o /dev/null 2>&1 | tee %soutput-%s.txt" %(cfg.d3n_host, cfg.d3n_port, bucket_name, obj_name, token, './', obj_name)], shell=True)
+    local_p = subprocess.Popen(["curl -i http://%s:%d/swift/v1/%s/%s -X GET -H \"range: bytes=%d-%d\" -H \"KARIZ_PREFETCH: 1\" -H \"X-Auth-Token: %s\" -o /dev/null 2>&1 | tee %soutput-%s.txt" %(cfg.d3n_host, cfg.d3n_port, bucket_name, obj_name, s_off, e_off, token, './', obj_name)], shell=True)
     local_p.wait()
+
+def evict_object(token, bucket_name, obj_name):
+    local_p = subprocess.Popen(["curl -i http://%s:%d/swift/v1/%s/%s -X DELETE -H \"KARIZ_EVICT: 1\" -H \"X-Auth-Token: %s\" -o /dev/null 2>&1 | tee %soutput-%s.txt" %(cfg.d3n_host, cfg.d3n_port, bucket_name, obj_name, token, './', obj_name)], shell=True)
+    local_p.wait()
+
 
 
 token = get_token()
 bucket_name = 'tstbuck'
 obj_name = 'test-file'
+obj_del = 'char2'
 s_off = 0
 e_off = 0
-prefetch_object(token, bucket_name, obj_name, s_off, e_off)
+evict_object(token, bucket_name, obj_del)
+#prefetch_object(token, bucket_name, obj_name, s_off, e_off)
 
 print(token)
-
-

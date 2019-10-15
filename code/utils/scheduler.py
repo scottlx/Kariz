@@ -14,7 +14,7 @@ import time
 import utils.requester as requester
 
 start_t = 0
-
+debug_sleep = 5 # second
 # B-level (PIG) schedule helper 
 def gang_schedule_helper(g, stage_to_be_executed = -1, priority = 0, timesUsed = [], dataset_stats = [], elapsed_time=0):
     s = sched.scheduler(time.time, time.sleep)
@@ -31,7 +31,7 @@ def gang_schedule_helper(g, stage_to_be_executed = -1, priority = 0, timesUsed =
     currentIndex = 0
     priority = 1
     requester.notify_stage_start(g, stage_to_be_executed)
-    time.sleep(5)
+    time.sleep(debug_sleep)
     cached_inpus = {}
     if g.plans_container:
         cache_plans = g.plans_container.get_stage_cache_plans(stage_to_be_executed)
@@ -75,7 +75,7 @@ def gang_scheduler(g):
     currentIndex = 0
     priority = 1
     requester.notify_stage_start(g, stage_to_be_executed)
-    time.sleep(5)
+    time.sleep(debug_sleep)
     cached_inpus = {}
     if g.plans_container:
         cache_plans = g.plans_container.get_stage_cache_plans(stage_to_be_executed)

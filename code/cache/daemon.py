@@ -19,7 +19,7 @@ g_cache = None
 
 def start_cache():
     global g_cache
-    cache = ds.Cache(500)
+    cache = ds.Cache(550)
     g_cache = cache
     return cache
 
@@ -36,14 +36,14 @@ def prefetch_mrd(data):
     return {'cached': g_cache.prefetch_mrd(data)}
 
 def cache_plan(data):
-    res = g_cache.cache_plan(data)
+    res = g_cache.cache_plan(data['data'], data['score'])
     status = 'cached' if res == 0 else 'is not satisfied'
     print(Fore.MAGENTA, '\n Kariz: cache request for ', str(data), status, str(g_cache), Style.RESET_ALL)
     print(Style.RESET_ALL)
     return {'cached': res}
 
 def prefetch_plan(data):
-    res = g_cache.prefetch_plan(data)
+    res = g_cache.prefetch_plan(data['data'], data['score'])
     status = 'prefetched' if res == 0 else 'is not satisfied'
     print(Fore.GREEN, '\n Kariz: prefetch request: ', str(data), status, str(g_cache), Style.RESET_ALL)
     return {'cached': res}

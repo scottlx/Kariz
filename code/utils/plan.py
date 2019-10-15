@@ -18,8 +18,11 @@ class Stage:
         self.start_time = 0
     
     def get_runtime(self):
-        self.update_longest_jobs()
-        return self.longest_job.est_runtime_remote
+        toyjob = job.Job()
+        for j in self.jobs:
+            if j.final_runtime > self.longest_job.final_runtime:
+                self.longest_job = j
+        return self.longest_job.final_runtime
     
     def update_inputs(self, j):
         for f in j.inputs:

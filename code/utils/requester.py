@@ -92,7 +92,7 @@ def cache_plan(plan): #FIXME: later get list of strides as well
     path = "/cacheplan"
     url = cache_url + path
     headers = {'Content-type': 'application/json'}
-    data = plan.data
+    data = {'data': plan.data, 'score': plan.pscore}
     reply = json.loads(requests.post(url, headers=headers, json=data).text)
     print(reply)
     return reply['cached']
@@ -101,7 +101,7 @@ def prefetch_plan(plan): #FIXME: later get list of strides as well
     path = "/prefetchplan"
     url = cache_url + path
     headers = {'Content-type': 'application/json'}
-    data = plan.data
+    data = {'data': plan.data, 'score': plan.pscore}
     reply = json.loads(requests.post(url, headers=headers, json=data).text)
     return reply['cached']
 
