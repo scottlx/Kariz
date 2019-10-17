@@ -43,6 +43,8 @@ import math
 import logging
 import threading
 import time
+import colorama
+from colorama import Fore, Style
 
 class Workload: 
     def __init__(self):
@@ -63,7 +65,6 @@ class Workload:
         self.statistic_df = None
         #self.load_dag_pool(self.fname)
         #self.load_statistics(stats_fname)
-        print(len(self.dags))
     
     def generate_datasets_pool(self):
         datasets = ['file_'+str(i) for i in range(0, self.n_datasets)]
@@ -176,26 +177,29 @@ class Workload:
             with open('misestimation_result.json', 'r') as dumpf:
                 stats = json.load(dumpf)
         except FileNotFoundError:
-                print("No stats available")
+                print(Fore.YELLOW, "No stats available", Style.RESET_ALL)
         
         mse_factors= [-0.5, -0.4, -0.3, -0.2, -0.1, -0.05, 0, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5]    
         runtimes = stats["Kariz"]
+        print('Start misestimation experiment with Kariz, number of DAGs in the workload: ', len(self.dags))
         for dag_id in self.dags:
-            if not dag_id.startswith('MEQ'): continue 
+            if not dag_id.startswith('AQ'): continue 
             dag = self.dags[dag_id]
+            dag.name = dag_id
             if dag_id not in runtimes:
                 runtimes[dag_id] = {}
             
             for msef in mse_factors:
-                print('Process:', dag_id, ', with mse_factor:', msef)
+                print(Fore.GREEN, '\nProcess:', dag_id, ', with mse_factor:', msef, Style.RESET_ALL)
                 dag.reset()
-                dag.config_misestimated_jobs(mse_factor = msef)
+                dag.set_misestimation_error(msef)
                 runtime, rtl, dataset_inputs = pigsim.start_pig_simulator(dag)
                 
                 runtimes[dag_id][msef] = {'Cache': 'Kariz', 'DAG_id': dag_id, 'Runtime': runtime, 
                                 'runtime list': rtl, 'datasets': dataset_inputs,
                                 'lamda': msef}
-            print(Fore.GREEN, runtimes[dag_id], Style.RESET_ALL)
+            #print(Fore.GREEN, runtimes[dag_id], Style.RESET_ALL)
+            print(Fore.GREEN, "We are done successfullyyyyy! We could get in!!!! Yoooohooooo", Style.RESET_ALL)
         
         with open('misestimation_result.json', 'w') as dumpf:    
             json.dump(stats, dumpf)

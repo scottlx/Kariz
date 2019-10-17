@@ -16,6 +16,8 @@ class Job:
         self.runtime_remote = 0
         self.runtime_partial_cached = 0
         self.final_runtime = 0
+        self.remote_misestimation = 0
+        self.cache_misestimation = 0
         self.num_task = 0
         self.bfs_level = 0
         self.blevel = 0
@@ -41,8 +43,8 @@ class Job:
         jobstr =  '{"id" : ' + str(self.id)
         jobstr +=  ', "runtime_cache":' + str(self.runtime_cache)
         jobstr +=  ', "runtime_remote":' + str(self.runtime_remote)
-        jobstr +=  ', "est_runtime_cache":' + str(self.est_runtime_cache)
-        jobstr +=  ', "est_runtime_remote":' + str(self.est_runtime_remote)
+        jobstr +=  ', "remote_misestimation":' + str(self.remote_misestimation)
+        jobstr +=  ', "cache_misestimation":' + str(self.cache_misestimation)
         jobstr +=  ', "num_task":' + str(self.num_task)
         jobstr +=  ', "children":' + str(self.children) + ', "inputs":' + str(self.inputs) + '}'
         return jobstr 
@@ -51,13 +53,24 @@ class Job:
         jobstr =  '{"id" : ' + str(self.id)
         jobstr +=  ', "runtime_cache":' + str(self.runtime_cache)
         jobstr +=  ', "runtime_remote":' + str(self.runtime_remote)
-        jobstr +=  ', "est_runtime_cache":' + str(self.est_runtime_cache)
-        jobstr +=  ', "est_runtime_remote":' + str(self.est_runtime_remote)
-        jobstr +=  ', "num_task":' + str(self.est_runtime_remote)
+        jobstr +=  ', "remote_misestimation":' + str(self.remote_misestimation)
+        jobstr +=  ', "cache_misestimation":' + str(self.cache_misestimation)
+        jobstr +=  ', "num_task":' + str(self.num_task)
         jobstr +=  ', "children":' + str(self.children) + ', "inputs":' + str(self.inputs) + '}'
         return jobstr 
     
+    def set_misestimation(self, rmse, cmse):
+        self.remote_misestimation = rmse
+        self.cache_misestimation = cmse; 
+        
+    def config_misestimated_runtimes(self, mse_factor):
+        if self.remote_misestimation:
+            self.est_runtime_remote += self.est_runtime_remote*mse_factor
+            self.runtime_partial_cached = self.est_runtime_remote 
+        if self.cache_misestimation:
+            self.est_runtime_cache += self.est_runtime_cache*mse_factor
 
+    
     def longer_than(self, other):
         return self.runtime_partial_cached > other.runtime_partial_cached
 

@@ -14,19 +14,19 @@ Submit to KARIZ API
 def submit_new_dag(g):
     path = "/newdag"
     url = base_url + path
-    print(requests.post(url, data=str(g)).text)
+    reply = requests.post(url, data=str(g)).text
 
 def notify_stage_start(g, stage_id):
     path = "/newstage"
     url = base_url + path
     data = '{"id": "'+ str(g.dag_id) + '", "stage": ' + str(stage_id) + '}'
-    print(requests.post(url, data=data).text)
+    reply = requests.post(url, data=data).text
 
 def complete(g):
     path = "/completed"
     url = base_url + path
     data='{"id": "' + str(g.dag_id) + '"}'
-    print(requests.post(url, data=data).text)
+    reply = requests.post(url, data=data).text
 
 
 '''
@@ -40,7 +40,6 @@ def uppined_datasets(data):
     headers = {'Content-type': 'application/json'}
     _data = {'data': data}
     reply = json.loads(requests.post(url, headers=headers, json=_data).text)
-    print(reply)
     return reply['cached']
     
 def cache_mrd_plan(data):
@@ -60,7 +59,6 @@ def prefetch_mrd_plan(data):
     url = cache_url + path
     headers = {'Content-type': 'application/json'}
     reply = json.loads(requests.post(url, headers=headers, json=data).text)
-    print(reply, data)
     return reply['cached']
 
 
@@ -94,7 +92,6 @@ def cache_plan(plan): #FIXME: later get list of strides as well
     headers = {'Content-type': 'application/json'}
     data = {'data': plan.data, 'score': plan.pscore}
     reply = json.loads(requests.post(url, headers=headers, json=data).text)
-    print(reply)
     return reply['cached']
 
 def prefetch_plan(plan): #FIXME: later get list of strides as well

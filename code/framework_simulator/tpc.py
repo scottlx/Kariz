@@ -316,6 +316,7 @@ q1a.config_inputs(1, {'b23': inputs['b23'], 'c23': inputs['c23']})
 q1a.config_inputs(2, {'d23': inputs['d23'], 'e23': inputs['e23']})
 q1a.config_inputs(3, {'sup': inputs['sup']})
 q1a.config_inputs(4, {'ad': inputs['ad']})
+q1a.set_misestimated_jobs(np.array([1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0]))
 graphs.append(q1a)
 graphs_dict['AQ1'] = q1a
 
@@ -347,6 +348,7 @@ q2a.config_inputs(1, {'b7': inputs['b7'], 'li': inputs['li']})
 q2a.config_inputs(2, {'d7': inputs['d7'], 'c7': inputs['c7']})
 q2a.config_inputs(3, {'sup': inputs['sup']})
 q2a.config_inputs(4, {'ad': inputs['ad']})
+q2a.set_misestimated_jobs(np.array([1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0]))
 graphs.append(q2a)
 graphs_dict['AQ7'] = q2a
 
@@ -382,6 +384,7 @@ q3a.config_inputs(4, {'sup': inputs['sup']})
 q3a.config_inputs(5, {'or': inputs['or'], 'cus': inputs['cus']})
 q3a.config_inputs(6, {'c2': inputs['c2']})
 q3a.config_inputs(8, {'re': inputs['re']})
+q3a.set_misestimated_jobs(np.array([0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1,1]))
 graphs.append(q3a)
 graphs_dict['AQ3'] = q3a
 
@@ -407,6 +410,7 @@ q4a.config_inputs(1, {'p': inputs['p'], 'li': inputs['li']})
 q4a.config_inputs(2, {'ad': inputs['ad']})
 q4a.config_inputs(3, {'e4': inputs['e4']})
 q4a.config_inputs(4, {'f4': inputs['f4']})
+q4a.set_misestimated_jobs(np.array([1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0]))
 graphs.append(q4a)
 graphs_dict['AQ4'] = q4a
 
@@ -426,6 +430,7 @@ q5a.static_runtime(5, 43, 43)
 q5a.config_inputs(0, {'a5': inputs['a5'], 'or': inputs['or']})
 q5a.config_inputs(1, {'b5': inputs['b5']})
 q5a.config_inputs(2, {'li': inputs['li']})
+q5a.set_misestimated_jobs(np.array([0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0]))
 graphs.append(q5a)
 graphs_dict['AQ5'] = q5a
 
@@ -446,6 +451,7 @@ q6a.config_inputs(0, {'sup': inputs['sup'], 'b6': inputs['b6']})
 q6a.config_inputs(1, {'c6': inputs['c6']})
 q6a.config_inputs(2, {'ab': inputs['ab']})
 q6a.config_inputs(3, {'d6': inputs['d6']})
+q6a.set_misestimated_jobs(np.array([0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0]))
 graphs.append(q6a)
 graphs_dict['AQ6'] = q6a
 
@@ -460,6 +466,7 @@ q7a.static_runtime(2, 11, 11)
 q7a.static_runtime(3, 39, 39)
 q7a.config_inputs(0, {'li2': inputs['li2'], 'f4': inputs['f4']})
 q7a.config_inputs(0, {'g': inputs['g']})
+q7a.set_misestimated_jobs(np.array([0, 1, 0, 0, 0, 1, 0, 0]))
 graphs.append(q7a)
 graphs_dict['AQ7'] = q7a
 
@@ -477,6 +484,7 @@ q8a.config_inputs(0, {'a1': inputs['a1']})
 q8a.config_inputs(1, {'a2': inputs['a2']})
 q8a.config_inputs(2, {'a3': inputs['a3']})
 q8a.config_inputs(3, {'a4': inputs['a4']})
+q8a.set_misestimated_jobs(np.array([1, 0, 0, 0, 0, 0, 1, 0]))
 graphs.append(q8a)
 graphs_dict['AQ8'] = q8a
 
@@ -492,6 +500,7 @@ q9a.config_inputs(0, {'b1': inputs['b1']})
 q9a.config_inputs(1, {'b2': inputs['b2']})
 q9a.config_inputs(2, {'b3': inputs['b3']})
 q9a.config_inputs(3, {'b4': inputs['b4']})
+q9a.set_misestimated_jobs(np.array([1, 1, 0, 1, 1, 1, 1, 1]))
 graphs.append(q9a)
 graphs_dict['AQ9'] = q9a
 
@@ -524,6 +533,7 @@ q10a.config_inputs(4, {'f': inputs['f']})
 q10a.config_inputs(5, {'g': inputs['g']})
 q10a.config_inputs(6, {'h': inputs['h']})
 q10a.config_inputs(7, {'b': inputs['b']})
+q10a.set_misestimated_jobs(np.array([1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1]))
 graphs.append(q10a)
 graphs_dict['AQ10'] = q10a
 
@@ -547,6 +557,7 @@ q11a.config_inputs(1, {'b': inputs['b']})
 q11a.config_inputs(2, {'c': inputs['c']})
 q11a.config_inputs(3, {'d': inputs['d']})
 q11a.config_inputs(4, {'b': inputs['b']})
+q11a.set_misestimated_jobs(np.array([0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1]))
 graphs.append(q11a)
 graphs_dict['AQ11'] = q11a
 
@@ -560,6 +571,7 @@ q11a.static_runtime(1, 40, 13)
 q11a.static_runtime(2, 11, 3)
 q11a.static_runtime(3, 39, 13)
 q12a.config_inputs(0, {'f4': inputs['f4'], 'a5': inputs['a5']})
+q12a.set_misestimated_jobs(np.array([1, 0, 1, 0, 1, 0, 0, 0]))
 graphs.append(q12a)
 graphs_dict['AQ12'] = q12a
 
@@ -578,6 +590,7 @@ q13a.config_inputs(0, {'ab': inputs['ab']})
 q13a.config_inputs(1, {'g': inputs['g']})
 q13a.config_inputs(2, {'a13': inputs['a13']})
 q13a.config_inputs(3, {'b23': inputs['b23'], 'b13': inputs['b13']})
+q13a.set_misestimated_jobs(np.array([0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0]))
 graphs.append(q13a)
 graphs_dict['AQ13'] = q13a
 
@@ -595,6 +608,7 @@ q14a.static_runtime(4, 49, 49)
 q14a.config_inputs(0, {'c23': inputs['c23'], 'f': inputs['f']})
 q14a.config_inputs(1, {'a14': inputs['a14']})
 q14a.config_inputs(2, {'d6': inputs['d6']})
+q14a.set_misestimated_jobs(np.array([1, 1, 1, 1, 0, 1, 1, 0, 1, 1]))
 graphs.append(q14a)
 graphs_dict['AQ14'] = q14a
 
@@ -620,6 +634,7 @@ q15a.config_inputs(1, {'b23': inputs['b23'], 'c23': inputs['c23']})
 q15a.config_inputs(2, {'d23': inputs['d23'], 'e23': inputs['e23']})
 q15a.config_inputs(3, {'sup': inputs['sup']})
 q15a.config_inputs(4, {'ad': inputs['ad']})
+q15a.set_misestimated_jobs(np.array([0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1]))
 graphs.append(q15a)
 graphs_dict['AQ15'] = q15a
 
@@ -642,6 +657,7 @@ q16a.config_inputs(2, {'c23': inputs['c23']})
 q16a.config_inputs(3, {'c16': inputs['c16']})
 q16a.config_inputs(4, {'d16': inputs['d16']})
 q16a.config_inputs(5, {'e16': inputs['e16']})
+q16a.set_misestimated_jobs(np.array([0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0]))
 graphs.append(q16a)
 graphs_dict['AQ16'] = q16a
 
@@ -664,113 +680,22 @@ q17a.config_inputs(2, {'b18': inputs['b18']})
 q17a.config_inputs(3, {'d': inputs['d']})
 q17a.config_inputs(4, {'f': inputs['f']})
 q17a.config_inputs(5, {'g': inputs['g']})
+q17a.set_misestimated_jobs(np.array([0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1]))
 graphs.append(q17a)
 graphs_dict['AQ17'] = q17a
 
-q1me = gr.Graph(3)
-q1me.add_edge(0, 2, 0)
-q1me.add_edge(1, 2, 0)
-q1me.static_runtime(0, 400, 240)
-q1me.static_runtime(1, 420, 320)
-q1me.static_runtime(2, 200, 100)
-q1me.config_inputs(0, {'a18': inputs['a18']})
-q1me.config_inputs(1, {'d6': inputs['d6']})
-q1me.config_inputs(2, {'a14': inputs['a14']})
-q1me.set_misestimated_jobs(np.array([0, 1, 1, 0, 1, 0]))
-graphs.append(q1me)
-graphs_dict['MEQ1'] = q1me
+q18a = gr.Graph(3)
+q18a.add_edge(0, 2, 0)
+q18a.add_edge(1, 2, 0)
+q18a.static_runtime(0, 400, 240)
+q18a.static_runtime(1, 420, 320)
+q18a.static_runtime(2, 200, 100)
+q18a.config_inputs(0, {'a18': inputs['a18']})
+q18a.config_inputs(1, {'d6': inputs['d6']})
+q18a.config_inputs(2, {'a14': inputs['a14']})
+q18a.set_misestimated_jobs(np.array([0, 1, 1, 0, 1, 0]))
+graphs.append(q18a)
+graphs_dict['AQ18'] = q18a
 
-'''
-q24 = Graph()
-graphs.append(q5)
-
-
-q25 = Graph()
-graphs.append(q5)
-
-
-q26 = Graph()
-graphs.append(q5)
-
-
-q27 = Graph()
-graphs.append(q5)
-
-
-q28 = Graph()
-graphs.append(q5)
-
-
-q29 = Graph()
-graphs.append(q5)
-
-
-q30 = Graph()
-graphs.append(q30)
-
-
-q31 = Graph()
-graphs.append(q31)
-
-
-q32 = Graph()
-graphs.append(q32)
-
-
-q33 = Graph()
-graphs.append(q33)
-
-
-q34 = Graph()
-graphs.append(q34)
-
-
-q35 = Graph()
-graphs.append(q35)
-
-
-q36 = Graph()
-graphs.append(q36)
-
-
-q37 = Graph()
-graphs.append(q37)
-
-
-q38 = Graph()
-graphs.append(q38)
-
-
-q39 = Graph()
-graphs.append(q39)
-
-
-q40 = Graph()
-graphs.append(q40)
-
-
-q41 = Graph()
-graphs.append(q41)
-
-
-q42 = Graph()
-graphs.append(q42)
-
-q43 = Graph(6)
-q43.add_edge(0, 1, 0)
-q43.add_edge(1, 2, 0)
-q43.add_edge(2, 3, 0)
-q43.add_edge(2, 4, 0)
-q43.add_edge(4, 5, 0)
-q43.static_runtime(0, 1182553, ?)
-q43.static_runtime(1, 374511, ?)
-q43.static_runtime(2, 1345, ?)
-q43.static_runtime(3, 1, 1)
-q43.static_runtime(4, 4, 4)
-q43.static_runtime(5, 4, 4)
-q43.inputs = {0:['b1'], 1:['b2'], 2:['b3'], 3:['b4']}
-q43.inputSize = {0 : [inputs['b1']], 1:[inputs['b2']], 2:[inputs['b3']], 3:[inputs['b4']]}
-q43.outputSize = {0 : [0], 1:[0], 2:[0], 3:[0]}
-'''
 
 

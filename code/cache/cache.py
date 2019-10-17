@@ -204,10 +204,11 @@ class Cache:
             for ce in evicted:
                 if ce in self.global_status: del self.global_status[ce]
         for f in data:
-            e = self.global_status[f]
-            e.touch()
-            e.increment_freq()
-            e.update_pscore(score)
+            if f in self.global_status:
+                e = self.global_status[f]
+                e.touch()
+                e.increment_freq()
+                e.update_pscore(score)
         return status.SUCCESS
 
     def evict(self, fname):

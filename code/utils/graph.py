@@ -27,8 +27,10 @@ class Graph:
         self.leaves = set(range(0, n_vertices))
         self.blevels = {}
         
+        self.mse_factor = 0
         self.plans_container = None
         self.stages = {}
+        self.name = 'graph'
 
     def reset(self):
         for j in self.jobs:
@@ -45,7 +47,7 @@ class Graph:
             graph_str += ','
         graph_str = graph_str[:-1]
         graph_str = graph_str  + '], "uuid": "' + str(self.dag_id) 
-        graph_str = graph_str  + '", "n_vertices" : ' + str(self.n_vertices) + '}'  
+        graph_str = graph_str  + '", "n_vertices" : ' + str(self.n_vertices) + ', "mse_factor" : ' + str(self.mse_factor) + ', "name" : "' + str(self.name) + '"}'  
         return graph_str
 
     def add_new_job(self, value):
@@ -53,15 +55,16 @@ class Graph:
         self.n_vertices+= 1
     
     def set_misestimated_jobs(self, mse_jobs):
-        self.misestimated_jobs = mse_jobs;
-            
-    def config_misestimated_jobs(self, mse_factor): # mse_factor: miss estimation factor
         for i in range(0, self.n_vertices):
-            if self.misestimated_jobs[i]:
-                self.jobs[i].est_runtime_remote += self.jobs[i].est_runtime_remote*mse_factor
-            if self.misestimated_jobs[i + self.n_vertices]:
-                self.jobs[i].est_runtime_cache += self.jobs[i].est_runtime_cache*mse_factor
-            self.jobs[i].est_partial_cached = self.jobs[i].est_runtime_remote 
+            self.jobs[i].set_misestimation(mse_jobs[i], mse_jobs[i + self.n_vertices])
+            
+    def config_misestimated_jobs(self): # mse_factor: miss estimation factor
+        for i in range(0, self.n_vertices):
+            self.jobs[i].config_misestimated_runtimes(self.mse_factor)
+    
+    def set_misestimation_error(self, mse_factor):
+        self.mse_factor = mse_factor;
+    
     # Randomly assign time value to each node
     def random_runtime(self):
         for i in range(0, self.n_vertices):
@@ -304,14 +307,15 @@ def jsonstr_to_graph(raw_execplan):
     n_vertices = raw_dag['n_vertices']
     g = Graph(n_vertices)
     g.dag_id = raw_dag['uuid']
+    g.mse_factor = raw_dag['mse_factor']
+    g.name = raw_dag['name']
     for j in jobs:
         g.jobs[j['id']].id = j['id']
         g.jobs[j['id']].static_runtime(j['runtime_remote'], j['runtime_cache'])
-        g.jobs[j['id']].estimated_runtimes(j['est_runtime_remote'], j['est_runtime_cache'])
+        g.jobs[j['id']].set_misestimation(j['remote_misestimation'], j['cache_misestimation'])
         g.jobs[j['id']].config_ntasks(j['num_task'])
         g.config_inputs(j['id'], j['inputs']) 
         for ch in j['children']:
-            g.add_edge(j['id'], ch, 0)     
+            g.add_edge(j['id'], ch, 0)
+    g.config_misestimated_jobs()     
     return g
-
-

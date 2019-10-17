@@ -5,6 +5,8 @@ from utils.graph import *
 import dagplanner as dp
 import utils.requester as requester
 import utils.status as status
+import colorama
+from colorama import Fore, Style
 
 class Mirab:
     def __init__(self):
@@ -29,6 +31,7 @@ class Mirab:
         self.dag_planners[dag_id].unpinned_completed_stage(stage_id)
         
     def delete_dag(self, dag_id):
+        self.dag_planners[dag_id].dump_stats()
         del self.fairness_scores[dag_id]
         del self.dag_planners[dag_id]
 
@@ -42,10 +45,9 @@ class Mirab:
             return
         
         # while there is no cache space avaialbe or no space left in bw
-        print("Plan new stage:", dag_id, stage_id)
         while len(plans) > 0:
             plan = plans.pop(0)
-            print("Mirab selected plan", str(plan));
+            print(Fore.LIGHTYELLOW_EX, "Mirab, process plans of DAG", plan.dag_id, ', stage' , plan.stage_id, Style.RESET_ALL)    
             if not plan.is_feasible():
                 continue
             if plan.type == 0:
@@ -54,6 +56,8 @@ class Mirab:
                     self.update_infeasible(plan)
                     continue
                 self.markas_pinned_datasets(plan.dag_id, plan)
+                if dag_id in self.dag_planners: 
+                    self.dag_planners[dag_id].update_statistics(plan.stage_id, plan.data) 
             else:
                 if requester.prefetch_plan(plan) != status.SUCCESS:
                     # for all priority plans larger than this priority on this stage mark them as infeasible
@@ -62,12 +66,12 @@ class Mirab:
                 self.update_planned_bandwidth(plan)
                 #self.mirab.update_pinned_datasets(plan)
             # Here Kariz was able to cache the requested plan
-            #print('cached/prefetch plan: ', plan) 
+            #print('cached/prefetch plan: ', plan)
+            print(Fore.LIGHTGREEN_EX, "\t plan ", plan.data, ' is cached/prefetched: ', plan.type, Style.RESET_ALL)
             self.update_fairness_score(plan)
             self.compute_weighted_scores(plans)
             
     def update_planned_bandwidth(self, plan):
-        print('update_planned_bandwidth')
         return 0 
 
     def get_stage_plans(self, dag_id, stage):
@@ -78,6 +82,7 @@ class Mirab:
         
     def get_plans(self, dag_id, stage):
         plans = [] 
+        if len(self.dag_planners) <= 0: return plans
         available_bw = self.available_bandwidth/len(self.dag_planners) # give every Job a fair share of DAG
         for gid in self.dag_planners:
                 plans.extend(self.dag_planners[gid].get_next_plans(available_bw))

@@ -12,6 +12,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import time
 import utils.requester as requester
+import colorama
+from colorama import Fore, Style
 
 start_t = 0
 debug_sleep = 5 # second
@@ -22,11 +24,10 @@ def gang_schedule_helper(g, stage_to_be_executed = -1, priority = 0, timesUsed =
     currentIndex = 0
     stage_index = stage_to_be_executed + 1
     if stage_index not in g.stages:
-        print('I should notify end of DAG')
+        print(Fore.RED, 'I should notify end of DAG', Style.RESET_ALL)
         return
 
     requester.notify_stage_start(g, stage_index)
-    
     stage_to_be_executed += 1
     currentIndex = 0
     priority = 1
@@ -38,9 +39,9 @@ def gang_schedule_helper(g, stage_to_be_executed = -1, priority = 0, timesUsed =
         for p in cache_plans:
             plan = cache_plans[p]
             if not requester.is_plan_cached(plan):
-                print('plan: ', plan, ' is not cached')
+                print(Fore.LIGHTYELLOW_EX,'\tPlan: ', plan, ' is not cached', Style.RESET_ALL)
                 break
-            print('plan: ', plan, ' is cached')
+            print(Fore.LIGHTGREEN_EX,'\tPlan: ', plan, ' is cached', Style.RESET_ALL)
             for f in plan.data:
                 cached_inpus[f] = cached_inpus[f] if f in cached_inpus and plan.data[f]['size'] < cached_inpus[f] else plan.data[f]['size']
             g.update_runtime(plan)
@@ -52,13 +53,12 @@ def gang_schedule_helper(g, stage_to_be_executed = -1, priority = 0, timesUsed =
     dataset_stats.append({'stage': stage_to_be_executed, 'inputs' : g.stages[stage_to_be_executed].stage_inputs, 'cached_inputs': cached_inpus})
     timesUsed.append(stage_runtime)
         
-    print("schedule stage ", stage_to_be_executed, " for execution. Estimated runtime: ", stage_runtime, ', elapsed time: ', elapsed_time)
+    print(Fore.LIGHTMAGENTA_EX, "\tSchedule stage ", stage_to_be_executed, " for execution. Estimated runtime: ", stage_runtime, ', elapsed time: ', elapsed_time, Style.RESET_ALL)
     elapsed_time += stage_runtime
     #currentLevel -= 1
     #timesUsed.append(currentMaxTime)
     s.enter(15, priority, gang_schedule_helper, argument=(g, stage_to_be_executed, priority, timesUsed, dataset_stats, elapsed_time))
-    s.run()    
-    print("Elapsed Time", elapsed_time, timesUsed)
+    s.run()
 
 
 # B-level Gang scheduler (PIG)
@@ -82,27 +82,25 @@ def gang_scheduler(g):
         for p in cache_plans:
             plan = cache_plans[p]
             if not requester.is_plan_cached(plan):
-                print('plan: ', plan, ' is not cached')
+                print(Fore.LIGHTYELLOW_EX,'\tPlan: ', plan, ' is not cached', Style.RESET_ALL)
                 break
-            print('plan: ', plan, ' is cached')
+            print(Fore.LIGHTGREEN_EX,'\tPlan: ', plan, ' is cached', Style.RESET_ALL)
             for f in plan.data:
-                cached_inpus[f] = cached_inpus[f] if f in cached_inpus and plan.data[f]['size'] < cached_inpus[f]['size'] else plan.data[f]             
+                cached_inpus[f] = cached_inpus[f] if f in cached_inpus and plan.data[f]['size'] < cached_inpus[f] else plan.data[f]['size']             
             g.update_runtime(plan)
     
     stage_runtime = g.stages[stage_to_be_executed].get_runtime()
     count = 1
     start = time.time()
     start_t = start
-    dataset_stats.append({'stage': stage_to_be_executed, 'inputs' : g.stages[stage_to_be_executed].stage_inputs, 'cached_inputs': cached_inpus})
-    print("schedule stage ", stage_to_be_executed, " for execution. Estimated runtime: ", stage_runtime,  ', elapsed time: 0')
+    dataset_stats.append({'stage': stage_to_be_executed, 'inputs' : g.stages[stage_to_be_executed].stage_inputs, 'cached_inputs': cached_inpus})    
     timesUsed.append(stage_runtime)
-    
     elapsed_time = stage_runtime
+    print(Fore.LIGHTMAGENTA_EX, "\tSchedule stage ", stage_to_be_executed, " for execution. Estimated runtime: ", stage_runtime, ', elapsed time: ', elapsed_time, Style.RESET_ALL)
     s.enter(15, priority, gang_schedule_helper, argument=(g, stage_to_be_executed, priority, timesUsed, dataset_stats, elapsed_time))
     s.run()
     end = time.time()
-    print("end", int(end - start))
-    print("total time", int(elapsed_time))
+    print(Fore.LIGHTGREEN_EX, "Total time", sum(timesUsed), Style.RESET_ALL)
     requester.complete(g)
     requester.clear_cache();
     return sum(timesUsed), timesUsed, dataset_stats

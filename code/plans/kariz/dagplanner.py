@@ -8,6 +8,9 @@ import math
 import copy
 import utils.pig as pig
 import utils.requester as requester
+import pandas as pd
+import colorama
+from colorama import Fore, Style
 
 class DAGPlanner:
     def __init__(self, g):
@@ -15,6 +18,7 @@ class DAGPlanner:
         self.pinned_plans = {}
         self.current_running_stage = -2
         self.current_processed_stage = -2
+        self.cached_plans = []
         g.plans_container = pig.build_kariz_priorities(g)
     
     def markas_pinned_datasets(self, plan):
@@ -25,10 +29,20 @@ class DAGPlanner:
     def unpinned_completed_stage(self, stage_id):
         if stage_id -1 not in self.pinned_plans: return
         for p in self.pinned_plans[stage_id -1]:
-            print('unpin completed stage --> DAG: ', self.g.dag_id, 
-                  'stage: ' , stage_id  -1, 'data in plan:', p.data) 
+            print(Fore.LIGHTMAGENTA_EX, 'Mirab unpin completed stage --> DAG: ', self.g.dag_id, 
+                  'stage: ' , stage_id  -1, 'data in plan:', p.data, Style.RESET_ALL) 
             requester.uppined_datasets(p.data)
             
+    
+    def update_statistics(self, stage_id, data):
+        self.cached_plans.append({'dag_id': self.g.dag_id, 'name': self.g.name, 
+                                  'mse_factor': self.g.mse_factor, 'data': data, 'stage_id' : stage_id})
+        
+    def dump_stats(self):
+        fname = 'cache_stats.csv'
+        fd = open(fname, 'a+')
+        df = pd.DataFrame(self.cached_plans)
+        df.to_csv(fd, index=False)
     
     def update_iscore(self, plan, s):
         last_plan_imprv = 0
