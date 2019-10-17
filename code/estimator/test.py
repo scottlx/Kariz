@@ -173,7 +173,7 @@ def test_collector():
     
     }
     '''
-    g = collector.dag_from_string(raw_execplan);
+    g = collector.pigstr_to_graph(raw_execplan);
     print(str(g))
 
 
