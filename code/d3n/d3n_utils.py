@@ -20,7 +20,7 @@ def evict_object(token, bucket_name, obj_name):
     local_p.wait()
 
 
-
+'''
 token = get_token()
 bucket_name = 'tstbuck'
 obj_name = 'test-file'
@@ -31,3 +31,4 @@ evict_object(token, bucket_name, obj_del)
 #prefetch_object(token, bucket_name, obj_name, s_off, e_off)
 
 print(token)
+'''
