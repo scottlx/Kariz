@@ -196,7 +196,7 @@ class Workload:
                 runtime, rtl, dataset_inputs = pigsim.start_pig_simulator(dag)
                 
                 runtimes[dag_id][msef] = {'Cache': 'Kariz', 'DAG_id': dag_id, 'Runtime': runtime, 
-                                'runtime list': rtl, 'datasets': dataset_inputs,
+                                'runtime list': rtl, 'datasets': dataset_inputs, 'type': dag.category,
                                 'lamda': msef}
             #print(Fore.GREEN, runtimes[dag_id], Style.RESET_ALL)
             print(Fore.GREEN, "We are done successfullyyyyy! We could get in!!!! Yoooohooooo", Style.RESET_ALL)

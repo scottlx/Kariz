@@ -1,17 +1,5 @@
 #!/usr/bin/python
-import sys
-import getopt
 import subprocess
-import os
-import shutil
-import time
-import urllib3
-import threading
-import time
-import os.path
-import socket
-
-
 import d3n_cfg as cfg
 
 

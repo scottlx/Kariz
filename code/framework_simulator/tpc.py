@@ -12,7 +12,7 @@ graphs = []
 graphs_dict = {}
 
 
-q3ds = gr.Graph(6)
+q3ds = gr.Graph(6, type=gr.Type.sequential)
 q3ds.add_edge(0, 1, 0)
 q3ds.add_edge(1, 2, 0)
 q3ds.add_edge(2, 3, 0)
@@ -24,7 +24,7 @@ graphs.append(q3ds)
 graphs_dict['DSQ3'] = q3ds
 
 
-q1h = gr.Graph(3)
+q1h = gr.Graph(3, type=gr.Type.broadcast)
 q1h.add_edge(0, 1, 0)
 q1h.add_edge(0, 2, 0)
 q1h.add_edge(1, 2, 0)
@@ -33,7 +33,7 @@ graphs.append(q1h)
 graphs_dict['HQ1'] = q1h
 
 
-q2h = gr.Graph(7)
+q2h = gr.Graph(7, type=gr.Type.sequential)
 q2h.add_edge(0, 1, 0)
 q2h.add_edge(1, 2, 0)
 q2h.add_edge(2, 3, 0)
@@ -49,7 +49,7 @@ graphs.append(q2h)
 graphs_dict['HQ2'] = q2h
 
 
-q3h = gr.Graph(5)
+q3h = gr.Graph(5,type=gr.Type.sequential)
 q3h.add_edge(0, 1, 0)
 q3h.add_edge(1, 2, 0)
 q3h.add_edge(2, 3, 0)
@@ -60,7 +60,7 @@ q3h.config_inputs(1, {'lineitem': 0})
 graphs.append(q3h)
 graphs_dict['HQ3'] = q3h
 
-q4h = gr.Graph(4)
+q4h = gr.Graph(4, type=gr.Type.broadcast)
 q4h.add_edge(0, 1, 0)
 q4h.add_edge(1, 2, 0)
 q4h.add_edge(1, 3, 0)
@@ -69,7 +69,7 @@ q4h.config_inputs(0, {'orders': 0, 'lineitem': 0})
 graphs.append(q4h)
 graphs_dict['HQ4'] = q4h
 
-q5h = gr.Graph(8)
+q5h = gr.Graph(8, type=gr.Type.sequential)
 q5h.add_edge(0, 1, 0)
 q5h.add_edge(1, 2, 0)
 q5h.add_edge(2, 3, 0)
@@ -87,12 +87,12 @@ graphs.append(q5h)
 graphs_dict['HQ5'] = q5h
 
 
-q6h = gr.Graph(1)
+q6h = gr.Graph(1, type=gr.Type.tiny)
 q6h.config_inputs(0, {'lineitem': 0})
 graphs.append(q6h)
 graphs_dict['HQ6'] = q6h
 
-q7h = gr.Graph(8)
+q7h = gr.Graph(8, type=gr.Type.aggregate)
 q7h.add_edge(0, 4, 0)
 q7h.add_edge(1, 3, 0)
 q7h.add_edge(2, 4, 0)
@@ -108,7 +108,7 @@ q7h.config_inputs(3, {'orders': 0, 'customer': 0})
 graphs.append(q7h)
 graphs_dict['HQ7'] = q7h
 
-q8h = gr.Graph(11)
+q8h = gr.Graph(11, type=gr.Type.complex)
 q8h.add_edge(0, 3, 0)
 q8h.add_edge(0, 4, 0)
 q8h.add_edge(1, 4, 0)
@@ -129,7 +129,7 @@ graphs.append(q8h)
 graphs_dict['HQ8'] = q8h
 
 
-q9h = gr.Graph(8)
+q9h = gr.Graph(8, type=gr.Type.aggregate)
 q9h.add_edge(0, 2, 0)
 q9h.add_edge(1, 2, 0)
 q9h.add_edge(2, 3, 0)
@@ -146,7 +146,7 @@ q9h.config_inputs(4, {'orders': 0})
 graphs.append(q9h)
 graphs_dict['HQ9'] = q9h
 
-q10h = gr.Graph(6)
+q10h = gr.Graph(6, type=gr.Type.sequential)
 q10h.add_edge(0, 1, 0)
 q10h.add_edge(1, 2, 0)
 q10h.add_edge(2, 3, 0)
@@ -159,7 +159,7 @@ q10h.config_inputs(2, {'lineitem': 0})
 graphs.append(q10h)
 graphs_dict['HQ10'] = q10h
 
-q11h = gr.Graph(6)
+q11h = gr.Graph(6, type=gr.Type.broadcast)
 q11h.add_edge(0, 1, 0)
 q11h.add_edge(1, 2, 0)
 q11h.add_edge(1, 3, 0)
@@ -172,7 +172,7 @@ graphs.append(q11h)
 graphs_dict['HQ11'] = q11h
 
 
-q12h = gr.Graph(4)
+q12h = gr.Graph(4, type=gr.Type.sequential)
 q12h.add_edge(0, 1, 0)
 q12h.add_edge(1, 2, 0)
 q12h.add_edge(1, 3, 0)
@@ -181,7 +181,7 @@ q12h.config_inputs(0, {'li2': 0, 'li2': 0})
 graphs.append(q12h)
 graphs_dict['HQ12'] = q12h
 
-q13h = gr.Graph(4)
+q13h = gr.Graph(4, type=gr.Type.sequential)
 q13h.add_edge(0, 1, 0)
 q13h.add_edge(1, 2, 0)
 q13h.add_edge(1, 3, 0)
@@ -190,14 +190,14 @@ q13h.config_inputs(0, {'customer': 0, 'orders': 0})
 graphs.append(q13h)
 graphs_dict['HQ13'] = q13h
 
-q14h = gr.Graph(3)
+q14h = gr.Graph(3, type=gr.Type.tiny)
 q14h.add_edge(0, 1, 0)
 q14h.add_edge(1, 2, 0)
 q14h.config_inputs(0, {'part': 0, 'lineitem': 0})
 graphs.append(q14h)
 graphs_dict['HQ14'] = q14h
 
-q15h = gr.Graph(6)
+q15h = gr.Graph(6, type=gr.Type.complex)
 q15h.add_edge(0, 1, 0)
 q15h.add_edge(0, 2, 0)
 q15h.add_edge(2, 3, 0)
@@ -209,7 +209,7 @@ q15h.config_inputs(2, {'supplier': 0})
 graphs.append(q15h)
 graphs_dict['HQ15'] = q15h
 
-q16h = gr.Graph(5)
+q16h = gr.Graph(5, type=gr.Type.aggregate)
 q16h.add_edge(0, 1, 0)
 q16h.add_edge(1, 2, 0)
 q16h.add_edge(2, 3, 0)
@@ -220,14 +220,14 @@ q16h.config_inputs(1, {'part': 0})
 graphs.append(q16h)
 graphs_dict['HQ16'] = q16h
 
-q17h = gr.Graph(2)
+q17h = gr.Graph(2, type=gr.Type.tiny)
 q17h.add_edge(0, 1, 0)
 q17h.add_edge(1, 2, 0)
 q17h.config_inputs(0, {'lineitem': 0, 'part': 0})
 graphs.append(q17h)
 graphs_dict['HQ17'] = q17h
 
-q18h = gr.Graph(6)
+q18h = gr.Graph(6, type=gr.Type.complex)
 q18h.add_edge(0, 1, 0)
 q18h.add_edge(1, 2, 0)
 q18h.add_edge(2, 3, 0)
@@ -240,14 +240,14 @@ graphs.append(q18h)
 graphs_dict['HQ18'] = q18h
 
 
-q19h = gr.Graph(2)
+q19h = gr.Graph(2, type=gr.Type.tiny)
 q19h.add_edge(0, 1, 0)
 q19h.config_inputs(0, {'lineitem': 0, 'part': 0})
 graphs.append(q19h)
 graphs_dict['HQ19'] = q19h
 
 
-q20h = gr.Graph(9)
+q20h = gr.Graph(9, type=gr.Type.aggregate)
 q20h.add_edge(0, 3, 0)
 q20h.add_edge(1, 3, 0)
 q20h.add_edge(2, 4, 0)
@@ -264,7 +264,7 @@ q20h.config_inputs(3, {'partsupp': 0})
 graphs.append(q20h)
 graphs_dict['HQ20'] = q20h
 
-q21h = gr.Graph(8)
+q21h = gr.Graph(8, type=gr.Type.complex)
 q21h.add_edge(0, 2, 0)
 q21h.add_edge(1, 2, 0)
 q21h.add_edge(1, 3, 0)
@@ -281,7 +281,7 @@ q20h.config_inputs(4, {'orders': 0})
 graphs.append(q21h)
 graphs_dict['HQ21'] = q21h
 
-q22h = gr.Graph(6)
+q22h = gr.Graph(6, type=gr.Type.sequential)
 q22h.add_edge(0, 1, 0)
 q22h.add_edge(1, 2, 0)
 q22h.add_edge(2, 3, 0)
@@ -294,7 +294,7 @@ graphs.append(q22h)
 graphs_dict['HQ22'] = q22h
 
 ######################################################################
-q1a = gr.Graph(8)
+q1a = gr.Graph(8, type=gr.Type.aggregate)
 q1a.add_edge(0, 3, 0)
 q1a.add_edge(1, 3, 0)
 q1a.add_edge(1, 4, 0)
@@ -320,7 +320,7 @@ q1a.set_misestimated_jobs(np.array([1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0,
 graphs.append(q1a)
 graphs_dict['AQ1'] = q1a
 
-q2a = gr.Graph(11)
+q2a = gr.Graph(11, type=gr.Type.complex)
 q2a.add_edge(0, 3, 0)
 q2a.add_edge(1, 3, 0)
 q2a.add_edge(1, 4, 0)
@@ -350,9 +350,9 @@ q2a.config_inputs(3, {'sup': inputs['sup']})
 q2a.config_inputs(4, {'ad': inputs['ad']})
 q2a.set_misestimated_jobs(np.array([1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0]))
 graphs.append(q2a)
-graphs_dict['AQ7'] = q2a
+graphs_dict['AQ2'] = q2a
 
-q3a = gr.Graph(12)
+q3a = gr.Graph(12, type=gr.Type.complex)
 q3a.add_edge(0, 2, 0)
 q3a.add_edge(0, 3, 0)
 q3a.add_edge(1, 4, 0)
@@ -388,7 +388,7 @@ q3a.set_misestimated_jobs(np.array([0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0,
 graphs.append(q3a)
 graphs_dict['AQ3'] = q3a
 
-q4a = gr.Graph(8)
+q4a = gr.Graph(8, type=gr.Type.aggregate)
 q4a.add_edge(0, 2, 0)
 q4a.add_edge(1, 2, 0)
 q4a.add_edge(2, 3, 0)
@@ -414,7 +414,7 @@ q4a.set_misestimated_jobs(np.array([1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1,
 graphs.append(q4a)
 graphs_dict['AQ4'] = q4a
 
-q5a = gr.Graph(6)
+q5a = gr.Graph(6, type=gr.Type.sequential)
 q5a.add_edge(0, 1, 0)
 q5a.add_edge(1, 2, 0)
 q5a.add_edge(2, 3, 0)
@@ -434,19 +434,19 @@ q5a.set_misestimated_jobs(np.array([0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0]))
 graphs.append(q5a)
 graphs_dict['AQ5'] = q5a
 
-q6a = gr.Graph(6)
+q6a = gr.Graph(6, type=gr.Type.broadcast)
 q6a.add_edge(0, 1, 0)
 q6a.add_edge(1, 2, 0)
 q6a.add_edge(1, 3, 0)
 q6a.add_edge(3, 4, 0)
 q6a.add_edge(3, 5, 0)
 q6a.add_edge(4, 5, 0)
-q5a.static_runtime(0, 77, 25)
-q5a.static_runtime(1, 153, 51)
-q5a.static_runtime(2, 12, 4)
-q5a.static_runtime(3, 40, 13)
-q5a.static_runtime(4, 11, 11)
-q5a.static_runtime(5, 40, 40)
+q6a.static_runtime(0, 77, 25)
+q6a.static_runtime(1, 153, 51)
+q6a.static_runtime(2, 12, 4)
+q6a.static_runtime(3, 40, 13)
+q6a.static_runtime(4, 11, 11)
+q6a.static_runtime(5, 40, 40)
 q6a.config_inputs(0, {'sup': inputs['sup'], 'b6': inputs['b6']})
 q6a.config_inputs(1, {'c6': inputs['c6']})
 q6a.config_inputs(2, {'ab': inputs['ab']})
@@ -455,7 +455,7 @@ q6a.set_misestimated_jobs(np.array([0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0]))
 graphs.append(q6a)
 graphs_dict['AQ6'] = q6a
 
-q7a = gr.Graph(4)
+q7a = gr.Graph(4, type=gr.Type.broadcast)
 q7a.add_edge(0, 1, 0)
 q7a.add_edge(1, 2, 0)
 q7a.add_edge(1, 3, 0)
@@ -471,7 +471,7 @@ graphs.append(q7a)
 graphs_dict['AQ7'] = q7a
 
 
-q8a = gr.Graph(4)
+q8a = gr.Graph(4, type=gr.Type.broadcast)
 q8a.add_edge(0, 1, 0)
 q8a.add_edge(0, 2, 0)
 q8a.add_edge(2, 3, 0)
@@ -488,7 +488,7 @@ q8a.set_misestimated_jobs(np.array([1, 0, 0, 0, 0, 0, 1, 0]))
 graphs.append(q8a)
 graphs_dict['AQ8'] = q8a
 
-q9a = gr.Graph(4)
+q9a = gr.Graph(4, type=gr.Type.aggregate)
 q9a.add_edge(0, 2, 0)
 q9a.add_edge(1, 2, 0)
 q9a.add_edge(2, 3, 0)
@@ -504,7 +504,7 @@ q9a.set_misestimated_jobs(np.array([1, 1, 0, 1, 1, 1, 1, 1]))
 graphs.append(q9a)
 graphs_dict['AQ9'] = q9a
 
-q10a = gr.Graph(10)
+q10a = gr.Graph(10, type=gr.Type.complex)
 q10a.add_edge(0, 1, 0)
 q10a.add_edge(0, 3, 0)
 q10a.add_edge(1, 9, 0)
@@ -537,7 +537,7 @@ q10a.set_misestimated_jobs(np.array([1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0
 graphs.append(q10a)
 graphs_dict['AQ10'] = q10a
 
-q11a = gr.Graph(7)
+q11a = gr.Graph(7, type=gr.Type.complex)
 q11a.add_edge(0, 1, 0)
 q11a.add_edge(0, 2, 0)
 q11a.add_edge(1, 6, 0)
@@ -561,21 +561,21 @@ q11a.set_misestimated_jobs(np.array([0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1]))
 graphs.append(q11a)
 graphs_dict['AQ11'] = q11a
 
-q12a = gr.Graph(4)
+q12a = gr.Graph(4, type=gr.Type.complex)
 q12a.add_edge(0, 1, 0)
 q12a.add_edge(1, 2, 0)
 q12a.add_edge(1, 3, 0)
 q12a.add_edge(2, 3, 0)
-q11a.static_runtime(0, 240, 80)
-q11a.static_runtime(1, 40, 13)
-q11a.static_runtime(2, 11, 3)
-q11a.static_runtime(3, 39, 13)
+q12a.static_runtime(0, 240, 80)
+q12a.static_runtime(1, 40, 13)
+q12a.static_runtime(2, 11, 3)
+q12a.static_runtime(3, 39, 13)
 q12a.config_inputs(0, {'f4': inputs['f4'], 'a5': inputs['a5']})
 q12a.set_misestimated_jobs(np.array([1, 0, 1, 0, 1, 0, 0, 0]))
 graphs.append(q12a)
 graphs_dict['AQ12'] = q12a
 
-q13a = gr.Graph(6)
+q13a = gr.Graph(4, type=gr.Type.complex)
 q13a.add_edge(0, 1, 0)
 q13a.add_edge(0, 2, 0)
 q13a.add_edge(1, 3, 0)
@@ -584,17 +584,15 @@ q13a.static_runtime(0, 350, 210)
 q13a.static_runtime(1, 25, 13)
 q13a.static_runtime(2, 120, 48)
 q13a.static_runtime(3, 200, 140)
-q13a.static_runtime(4, 100, 100)
-q13a.static_runtime(5, 100, 100)
 q13a.config_inputs(0, {'ab': inputs['ab']})
 q13a.config_inputs(1, {'g': inputs['g']})
 q13a.config_inputs(2, {'a13': inputs['a13']})
 q13a.config_inputs(3, {'b23': inputs['b23'], 'b13': inputs['b13']})
-q13a.set_misestimated_jobs(np.array([0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0]))
+q13a.set_misestimated_jobs(np.array([0, 0, 1, 0, 0, 1, 0, 0]))
 graphs.append(q13a)
 graphs_dict['AQ13'] = q13a
 
-q14a = gr.Graph(5)
+q14a = gr.Graph(5, type=gr.Type.complex)
 q14a.add_edge(0, 1, 0)
 q14a.add_edge(0, 2, 0)
 q14a.add_edge(1, 3, 0)
@@ -612,7 +610,7 @@ q14a.set_misestimated_jobs(np.array([1, 1, 1, 1, 0, 1, 1, 0, 1, 1]))
 graphs.append(q14a)
 graphs_dict['AQ14'] = q14a
 
-q15a = gr.Graph(8)
+q15a = gr.Graph(8, type=gr.Type.complex)
 q15a.add_edge(0, 3, 0)
 q15a.add_edge(1, 3, 0)
 q15a.add_edge(1, 4, 0)
@@ -638,7 +636,7 @@ q15a.set_misestimated_jobs(np.array([0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0
 graphs.append(q15a)
 graphs_dict['AQ15'] = q15a
 
-q16a = gr.Graph(6)
+q16a = gr.Graph(6, type=gr.Type.complex)
 q16a.add_edge(0, 1, 0)
 q16a.add_edge(0, 2, 0)
 q16a.add_edge(0, 3, 0)
@@ -661,7 +659,7 @@ q16a.set_misestimated_jobs(np.array([0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0]))
 graphs.append(q16a)
 graphs_dict['AQ16'] = q16a
 
-q17a = gr.Graph(6)
+q17a = gr.Graph(6, type=gr.Type.complex)
 q17a.add_edge(0, 1, 0)
 q17a.add_edge(0, 2, 0)
 q17a.add_edge(0, 3, 0)
@@ -684,7 +682,7 @@ q17a.set_misestimated_jobs(np.array([0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1]))
 graphs.append(q17a)
 graphs_dict['AQ17'] = q17a
 
-q18a = gr.Graph(3)
+q18a = gr.Graph(3, type=gr.Type.aggregate)
 q18a.add_edge(0, 2, 0)
 q18a.add_edge(1, 2, 0)
 q18a.static_runtime(0, 400, 240)

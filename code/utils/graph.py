@@ -11,10 +11,19 @@ import utils.plan as plan
 import ast
 import utils.job as jb
 import numpy as np
+import enum 
+  
+# creating enumerations using class 
+class Type(enum.Enum): 
+    tiny = 0
+    sequential = 1
+    aggregate = 2
+    broadcast = 3
+    complex = 4
 
 #Class to represent a graph 
 class Graph: 
-    def __init__(self, n_vertices = 0):
+    def __init__(self, n_vertices = 0, type = Type.complex):
         self.dag_id = uuid.uuid1()
         self.n_vertices = n_vertices 
         self.jobs = {}
@@ -31,6 +40,7 @@ class Graph:
         self.plans_container = None
         self.stages = {}
         self.name = 'graph'
+        self.category = type
 
     def reset(self):
         for j in self.jobs:
