@@ -173,7 +173,9 @@ def test_collector():
     
     }
     '''
-    g = collector.dag_from_string(raw_execplan);
+    objstore = objs.ObjectStore()
+    collector.objectstore = objstore
+    g = Graph.pigstr_to_graph(raw_execplan);
     print(str(g))
 
 

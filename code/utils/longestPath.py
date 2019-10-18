@@ -1,16 +1,5 @@
 # Author: Trevor Nogues
 
-<<<<<<< HEAD
-# Note: Input weights must be negative
-
-from collections import defaultdict 
-import time
-
-startTime = time.time()
-=======
-from collections import defaultdict 
->>>>>>> 42ebd5d5fc08a257c18c9ca10dbfe4ad28051618
-
 class Graph:
     """
     A simple undirected, weighted graph
