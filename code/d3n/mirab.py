@@ -20,7 +20,7 @@ class Mirab:
         self.alpha = 0.5
         self.available_bandwidth = 1200 # 10Gbps = 1.2 GBps = 1200 MBps
         self.cache_block_size = 1 # 1MBype
-        self.cache = cache.Cache() 
+        self.cache = cache.Cache(10000) 
         
         self.n_thp = 10;
         self.d3n_conn = thp.ThreadPool(self.n_thp)
@@ -46,10 +46,13 @@ class Mirab:
 
     def online_planner(self, dag_id, stage_id):
 
+
+        print(dag_id, stage_id)
         # uppin files from previous stage 
         self.unpinned_completed_stage(dag_id, stage_id)
 
         plans = self.get_plans(dag_id, stage_id)
+        print(plans)
         if plans is None:
             return
         

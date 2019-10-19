@@ -12,7 +12,7 @@ import ast
 import utils.job as jb
 import numpy as np
 import enum 
-  
+
 # creating enumerations using class 
 class Type(enum.Enum): 
     tiny = 0
@@ -236,10 +236,24 @@ def str_to_graph(raw_execplan, objectstore):
     g = None
     if raw_execplan.startswith('DAG'):
         g = pigstr_to_graph(raw_execplan, objectstore)
+    elif raw_execplan.startswith('ID'):
+        g = graph_id_to_graph(raw_execplan, objectstore)
     else:
         g = jsonstr_to_graph(raw_execplan)
     return g;
         
+def graph_id_to_graph(raw_execplan, objectstore):
+    import framework_simulator.tpc as tpc  
+    ls = raw_execplan.split(':')
+    g_bench = ls[1]
+    g_id = ls[2]
+    g_ds = ls[3]
+    if g_id in tpc.graphs_dict:
+       g = tpc.graphs_dict[g_id]
+       for j in g.jobs:
+          for i in g.jobs[j].inputs:
+              g.jobs[j].inputs[i] = objectstore.tpch_metadata[g_ds][i]
+       return g
 
 def pigstr_to_graph(raw_execplan, objectstore):
     ls = raw_execplan.split("\n")

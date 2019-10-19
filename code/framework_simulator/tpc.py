@@ -5,7 +5,7 @@ Created on Sep 19, 2019
 '''
 
 import utils.graph as gr
-from inputs import *
+from utils.inputs import *
 
 
 graphs = []

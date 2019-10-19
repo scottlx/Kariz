@@ -6,7 +6,7 @@ import random
 
 def getJobStats2(jobId, host=''):
     """ GETTING DIRECTORIES """
-    end_point_address = 'http://kariz-1:19888' if not host else 'http://' + host + ':19888'
+    end_point_address = 'http://192.168.35.2:19888' if not host else 'http://' + host + ':19888'
         
     command = end_point_address + "/ws/v1/history/mapreduce/jobs/" + jobId  + "/"
     #command = 'http://neu-3-2:19888/jobhistory/job/'+ jobId + '/'
@@ -20,7 +20,7 @@ def getJobStats2(jobId, host=''):
 
 def getJobFSCounters(jobId, host=''):
     """ GETTING DIRECTORIES """
-    end_point_address = 'http://kariz-1:19888' if not host else 'http://' + host + ':19888'    
+    end_point_address = 'http://192.168.35.2:19888' if not host else 'http://' + host + ':19888'    
     command = end_point_address + "/ws/v1/history/mapreduce/jobs/" + jobId  + "/counters"
     #command = 'http://neu-3-2:19888/jobhistory/job/'+ jobId + '/'
     resp = requests.get(command)
@@ -39,7 +39,7 @@ def getJobFSCounters(jobId, host=''):
 
 def getJobStats(jobId, host=''):
     """ GETTING DIRECTORIES """
-    end_point_address = 'http://kariz-1:19888' if not host else 'http://' + host + ':19888'
+    end_point_address = 'http://192.168.35.2:19888' if not host else 'http://' + host + ':19888'
         
     command = end_point_address + "/ws/v1/history/mapreduce/jobs/" + jobId  + "/"
     #command = 'http://neu-3-2:19888/jobhistory/job/'+ jobId + '/'
@@ -57,7 +57,7 @@ def getJobStats(jobId, host=''):
     return Elapsed, waitTime, name, mapTime, reduceTime, shuffleTime 
 
 def getInputs(jobId):
-    command = "http://kariz-1:19888/ws/v1/history/mapreduce/jobs/" + jobId  + "/conf"
+    command = "http://192.168.35.2:19888/ws/v1/history/mapreduce/jobs/" + jobId  + "/conf"
     resp = requests.get(command)
 
     ResJson= json.loads(resp.content.decode('utf-8'))
@@ -69,7 +69,7 @@ def getInputs(jobId):
     return inputs['value'].split(',')
 
 def getOutputs(jobId):
-    command = "http://kariz-1:19888/ws/v1/history/mapreduce/jobs/" + jobId  + "/conf"
+    command = "http://192.168.35.2:19888/ws/v1/history/mapreduce/jobs/" + jobId  + "/conf"
     resp = requests.get(command)
 
     ResJson= json.loads(resp.content.decode('utf-8'))
@@ -85,7 +85,7 @@ def getOutputs(jobId):
 
 def getJobName(jobId):
     """ GETTING DIRECTORIES """
-    command = "http://kariz-1:19888/ws/v1/history/mapreduce/jobs/" + jobId  + "/conf"
+    command = "http://192.168.35.2:19888/ws/v1/history/mapreduce/jobs/" + jobId  + "/conf"
     resp = requests.get(command)
 
     ResJson= json.loads(resp.content.decode('utf-8'))
@@ -101,7 +101,7 @@ def getJobName(jobId):
 
 def getJobResourceRequest(jobId):
    """ GETTING DIRECTORIES """
-   command = "http://kariz-1:19888/ws/v1/history/mapreduce/jobs/" + jobId  + "/conf"
+   command = "http://192.168.35.2:19888/ws/v1/history/mapreduce/jobs/" + jobId  + "/conf"
    resp = requests.get(command)
    resources = {}
    ResJson= json.loads(resp.content.decode('utf-8'))
@@ -115,7 +115,7 @@ def getJobResourceRequest(jobId):
 
 def getJobInfo(jobId):
    """ GETTING DIRECTORIES """
-   command = "http://kariz-1:19888/ws/v1/history/mapreduce/jobs/" + jobId  + "/conf"
+   command = "http://192.168.35.2:19888/ws/v1/history/mapreduce/jobs/" + jobId  + "/conf"
    resp = requests.get(command)
 
    ResJson= json.loads(resp.content.decode('utf-8'))
@@ -139,7 +139,7 @@ def getJobInfo(jobId):
 
 
    """ GETTING SIZES """
-   command = "http://kariz-1:19888/ws/v1/history/mapreduce/jobs/" + jobId  + "/counters"
+   command = "http://192.168.35.2:19888/ws/v1/history/mapreduce/jobs/" + jobId  + "/counters"
    resp = requests.get(command)
    ResJson= json.loads(resp.content.decode('utf-8'))
    properties = ResJson['jobCounters']['counterGroup']

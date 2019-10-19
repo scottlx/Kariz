@@ -45,8 +45,8 @@ def get_timestamp():
     return datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
 
 def notify_collector(stats):
-    #g_collector.update_statistic_from_string(stats.decode("utf-8"))
-    print("Stats has been recieved")
+#    g_collector.update_statistic_from_string(stats.decode("utf-8"))
+    print("The connection doesnot work for stat collector @ Kaizen BMI nodes")
 
 def notify_planner(new_stage):
     g_kariz.notify_new_stage_from_string(new_stage.decode("utf-8"))
@@ -58,5 +58,5 @@ def notify_mirab(new_dag):
 def notify_completed(dagstr):
     g_kariz.remove_dag(dagstr.decode("utf-8"))
     
-def daemon.notify_dagalert(new_dag):
+def notify_dagalert(new_dag):
     g_kariz.new_dag_from_id(new_dag.decode("utf-8"))    
