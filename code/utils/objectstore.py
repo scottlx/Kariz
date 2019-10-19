@@ -14,6 +14,7 @@ import sys
 import hdfs
 import json
 import random
+import utils.inputs as inputs
 
 class ObjectStore:
     def __init__(self):
@@ -29,20 +30,39 @@ class ObjectStore:
         hdfs_endpoint_url = 'http://kariz-1:50070'
         hdfs_user = 'ubuntu'
         self.hdfsclient = hdfs.InsecureClient(hdfs_endpoint_url, user=hdfs_user)
+        self.tpch_metadata, self.tpcds_metadata = inputs.prepare_tpc_metadata()
 
-    
+
+    def get_datasetsize_tpc_url(self, url):
+        dataset_size = 0
+        url = url.replace('s3a://data/', '')  # remove s3a:// from the url
+        dataset_name = url.split("/")[0].split('-')[0]
+        dataset_size = url.split("/")[0].split('-')[1]
+        obj_name= url.split("/")[1]
+        if dataset_name == 'tpch':
+            return self.tpch_metadata[dataset_size][obj_name], obj_name
+        if dataset_name == 'tpcds':
+            return self.tpcds_metadata[dataset_size][obj_name], obj_name
+        return dataset_size, url.split('/')[-1]
+        
+
     def get_datasetsize_from_url(self, url):
         dataset_size = 0
+        if url.startswith("hdfs") or url.startswith('/'):
+            return dataset_size, url.split('/')[-1]
+        if 'tpc' in url:
+           return self.get_datasetsize_tpc_url(url)
+        
         if url.startswith("s3a"):
             dataset_size = self.get_datasetsize_from_s3a_url(url)
         elif url.startswith("alluxio"):
             dataset_size = self.get_datasetsize_from_alluxio_url(url)
         elif url.startswith("hdfs"):
-            print('Ignore', url)
+            return dataset_size, url.split('/')[-1]
         else:
             dataset_size = self.get_datasetsize_from_hdfs_url(url)
         return dataset_size;
-    
+
     def get_datasetsize_from_hdfs_url(self, url):
         dataset_size = 0
         status = self.hdfsclient.status(url)

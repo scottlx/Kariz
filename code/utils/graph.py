@@ -247,7 +247,6 @@ def pigstr_to_graph(raw_execplan, objectstore):
     v_index = -1
     vertices= {}
     vertices_size = {}
-    print(raw_execplan)
     for x in ls:
         if x.startswith('DAG'):
             dag_id = x.split(':')[1].replace('\'', '')
@@ -265,49 +264,46 @@ def pigstr_to_graph(raw_execplan, objectstore):
             extra = result.split(":")[-1]
             results = result.replace(":" + extra, "")
             if 'output' not in vertices[v_index]:
-                vertices[v_index]['output'] = []
-            vertices[v_index]['output'].append(results)
+                vertices[v_index]['output'] = {}
+            outputs = results.split(',')
+            for o in outputs:
+               dataset_size, obj_name = objectstore.get_datasetsize_from_url(o)
+               vertices[v_index]['output'][obj_name] = dataset_size
     
         if x.find("Load") != -1:
             result = x.split('(')[1].split(')')[0]
             extra = result.split(":")[-1]
             inputs =  result.replace(":" + extra, "")
-            if 'input' not in vertices[v_index]:
-                vertices[v_index]['input'] = []
-            vertices[v_index]['input'].append(inputs)
-    
-            if 'inputSize' not in vertices[v_index]:
-                vertices[v_index]['inputSize'] = []
-    
-            for i in vertices[v_index]['input']:
-                dataset_size = objectstore.get_datasetsize_from_url(i)
-                vertices[v_index]['inputSize'].append(dataset_size)
+            inputs = inputs.split(',')
+            if 'inputs' not in vertices[v_index]:
+                vertices[v_index]['inputs'] = {}
+            for i in inputs:
+               dataset_size, obj_name = objectstore.get_datasetsize_from_url(i)
+               vertices[v_index]['inputs'][obj_name] = dataset_size
+
         if x.find("Quantile file") != -1:
             result = x.split('{')[1].split('}')[0]
-            if 'input' not in vertices[v_index]:
-                vertices[v_index]['input'] = []
-            vertices[v_index]['input'].append(result)
-            
-            if 'inputSize' not in vertices[v_index]:
-                vertices[v_index]['inputSize'] = []
-    
-            for i in result.split(','):
-                dataset_size = objectstore.get_datasetsize_from_url(i)
-                vertices[v_index]['inputSize'].append(dataset_size)
+            if 'inputs' not in vertices[v_index]:
+                vertices[v_index]['inputs'] = {}
+            inputs = result.split(',')
+            for i in inputs:
+                dataset_size, obj_name = objectstore.get_datasetsize_from_url(i)
+                vertices[v_index]['inputs'][obj_name] = dataset_size
+
 
     g = Graph(len(vertices))
     g.dag_id = dag_id
     for v1 in vertices:
         for v2 in vertices:
             if v1 == v2: # and len(vertices) != 1:
-                g.add_node(v1)
-            g.inputs[v1] = vertices[v1]['input']
-            g.inputSize[v1] = vertices[v1]['inputSize']
-            g.outputs[v1] = vertices[v1]['output']
+                g.add_new_job(v1)
             
-            for i in vertices[v1]['input']:
+            g.config_inputs(v1, vertices[v1]['inputs'])
+
+            for i in vertices[v1]['inputs']:
                 if i in vertices[v2]['output']:
                     g.add_edge(v2, v1, 0)
+    #print(str(g))
     return g
 
 

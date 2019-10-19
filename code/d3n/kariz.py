@@ -7,7 +7,7 @@ import csv
 import threading
 import os
 import ast
-
+import json
 import utils.graph as graph
 import mirab as mq
 
@@ -25,6 +25,7 @@ class Kariz:
             graphstr = self.gq.get()
             if graphstr:
                 g = graph.str_to_graph(graphstr, self.objectstore)
+                print(g)
                 self.mirab.add_dag(g)
                 self.gq.task_done()
 
@@ -65,6 +66,9 @@ class Kariz:
          
         _kariz = self # mirab daemon instance
          
+   
+    def new_dag_from_id(self, dag_string):
+        print(dag_string)
 
     def new_dag_from_string(self, dag_string):
         self.gq.put(dag_string)

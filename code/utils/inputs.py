@@ -5,10 +5,34 @@ import numpy as np
 
 blocksize = 1024*1024
 
-df = pd.read_csv('inputs.csv')
-df['size'] = pd.to_numeric(df['size'])
-df['n_blocks'] = (df['size']/blocksize).apply(np.ceil).astype(int)
-working_set_size = df['n_blocks'].sum() # 393GB 
+def prepare_tpc_metadata():
+   tpch_inputs = {'1G' : {}, '2G' : {}, '4G' : {}, '8G' : {}, '16G' : {},
+               '32G' : {}, '48G' : {}, '64G' : {}, '80G' : {},
+               '100G' : {}, '128G' : {}, '150G' : {}, '200G' : {},
+               '256G' : {}, '300G' : {}}
+
+   tpcds_inputs = {'1G' : {}, '2G' : {}, '4G' : {}, '8G' : {}, '16G' : {},
+               '32G' : {}, '48G' : {}, '64G' : {}, '80G' : {},
+               '100G' : {}, '128G' : {}, '150G' : {}, '200G' : {},
+               '256G' : {}, '300G' : {}}
+
+   df = pd.read_csv('/home/mania/Kariz/code/utils/inputs.csv')
+   df['size'] = pd.to_numeric(df['size'])
+   df['n_blocks'] = (df['size']/blocksize).apply(np.ceil).astype(int)
+   working_set_size = df['n_blocks'].sum() # 393GB 
+   for index, row in df.iterrows():
+      dataset_meta = row['name'].split('_')
+      query = dataset_meta[0]
+      ds_sz = dataset_meta[1]
+      input_name = row['name'].replace(query+'_'+ds_sz+'_', '')
+    
+      if query == 'tpcds':
+         tpcds_inputs[ds_sz][input_name] = row['n_blocks']         
+      elif query == 'tpch':
+         tpch_inputs[ds_sz][input_name] = row['n_blocks']
+
+   return tpch_inputs, tpcds_inputs;
+
 
 inputs = {'a': 326, 'b': 250, 'c': 250, 'd' : 100
           , 'aa': 700, 'ab': 350, 'ac': 1400, 'ad': 120, 'f': 150, 'g':200, 'h':200
@@ -20,29 +44,6 @@ inputs = {'a': 326, 'b': 250, 'c': 250, 'd' : 100
           , 'a5': 46, 'b5': 200, 'b6': 50, 'c6': 226, 'd6': 300, 'li2': 1449
           , 'a13': 120, 'b13': 200, 'a14': 250, 'a16': 449, 'b16': 250, 'c16': 300
           , 'd16':185, 'e16': 250, 'a18': 400, 'b18': 146}  
-
-
-tpch_inputs = {'1G' : {}, '2G' : {}, '4G' : {}, '8G' : {}, '16G' : {}, 
-               '32G' : {}, '48G' : {}, '64G' : {}, '80G' : {}, 
-               '100G' : {}, '128G' : {}, '150G' : {}, '200G' : {}, 
-               '256G' : {}, '300G' : {}}
-
-tpcds_inputs = {'1G' : {}, '2G' : {}, '4G' : {}, '8G' : {}, '16G' : {}, 
-               '32G' : {}, '48G' : {}, '64G' : {}, '80G' : {}, 
-               '100G' : {}, '128G' : {}, '150G' : {}, '200G' : {}, 
-               '256G' : {}, '300G' : {}}
-
-for index, row in df.iterrows():
-    
-    dataset_meta = row['name'].split('_')
-    query = dataset_meta[0]
-    ds_sz = dataset_meta[1]
-    input_name = row['name'].replace(query+'_'+ds_sz+'_', '')
-    
-    if query == 'tpcds':
-        tpcds_inputs[ds_sz][input_name] = row['n_blocks']         
-    elif query == 'tpch':
-        tpch_inputs[ds_sz][input_name] = row['n_blocks']
 
 
 tpcds_runtime = {
