@@ -63,7 +63,7 @@ class Mirab:
             if not plan.is_feasible():
                 continue
             if plan.type == 0:
-                if cache.cache_plan(plan) != status.SUCCESS:
+                if self.cache.cache_plan(plan.data, plan.iscore) != status.SUCCESS:
                     # for all priority plans larger than this priority on this stage mark them as infeasible
                     self.update_infeasible(plan)
                     continue
@@ -72,11 +72,12 @@ class Mirab:
                     self.dag_planners[dag_id].update_statistics(plan.stage_id, plan.data)
                 self.d3n_conn.add_task(d3n.cache_plan, plan) 
             else:
-                if cache.prefetch_plan(plan) != status.SUCCESS:
+                if self.cache.prefetch_plan(plan.data, plan.iscore) != status.SUCCESS:
                     # for all priority plans larger than this priority on this stage mark them as infeasible
                     self.update_infeasible(plan)
                     continue
-                self.d3n_conn.add_task(d3n.prefetch, plan)
+                for f in plan.data:
+                   self.d3n_conn.add_task(d3n.prefetch_object, f, plan.data[f])
                 self.update_planned_bandwidth(plan)
                 #self.mirab.update_pinned_datasets(plan)
             # Here Kariz was able to cache the requested plan

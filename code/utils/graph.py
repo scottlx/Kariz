@@ -253,6 +253,7 @@ def graph_id_to_graph(raw_execplan, objectstore):
        for j in g.jobs:
           for i in g.jobs[j].inputs:
               g.jobs[j].inputs[i] = objectstore.tpch_metadata[g_ds][i]
+          g.static_runtime(j, objectstore.tpch_runtime[g_id][g_ds][j]['remote'], objectstore.tpch_runtime[g_id][g_ds][j]['cached'])
        return g
 
 def pigstr_to_graph(raw_execplan, objectstore):

@@ -1,7 +1,9 @@
+#!/usr/bin/python
 import pandas as pd
 import math
 import numpy as np
-
+import csv
+import json
 
 blocksize = 1024*1024
 
@@ -33,6 +35,30 @@ def prepare_tpc_metadata():
 
    return tpch_inputs, tpcds_inputs;
 
+
+def prepare_tpc_runtimes():
+   tpch_runtimes = {}
+   tpcds_runtimes = {}
+   with open('/home/mania/Kariz/code/utils/tpchjobs.csv') as csvfile:
+        readCSV = csv.reader(csvfile, delimiter=',')
+        headers = next(readCSV, None)
+        for row in readCSV:
+           query = row[0]
+           dataset = row[4]
+           jobid = int(row[2])
+           rorc = row[6]
+           runtime = int(row[3])
+           if query not in tpch_runtimes:
+              tpch_runtimes[query]={}
+           if dataset not in tpch_runtimes[query]:
+              tpch_runtimes[query][dataset] = {}
+           if jobid not in tpch_runtimes[query][dataset]:
+              tpch_runtimes[query][dataset][jobid] = {}
+           if rorc == 'R':
+              tpch_runtimes[query][dataset][jobid]['remote'] = runtime
+           elif rorc == 'C': 
+              tpch_runtimes[query][dataset][jobid]['cached'] = runtime
+   return tpch_runtimes, tpcds_runtimes
 
 inputs = {'a': 326, 'b': 250, 'c': 250, 'd' : 100
           , 'aa': 700, 'ab': 350, 'ac': 1400, 'ad': 120, 'f': 150, 'g':200, 'h':200

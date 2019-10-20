@@ -31,6 +31,7 @@ class ObjectStore:
         hdfs_user = 'ubuntu'
         self.hdfsclient = hdfs.InsecureClient(hdfs_endpoint_url, user=hdfs_user)
         self.tpch_metadata, self.tpcds_metadata = inputs.prepare_tpc_metadata()
+        self.tpch_runtime, self.tpcds_runtime = inputs.prepare_tpc_runtimes()
 
 
     def get_datasetsize_tpc_url(self, url):
