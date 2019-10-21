@@ -7,12 +7,13 @@ import estimator.collector as collector
 import utils.objectstore as objs
 import pandas as pd
 import utils.hadoop as hadoop
+import utils.graph as Graph
 
 
 def test_collector_alluxio():
     raw_execplan = '''DAG:'92af9f31-1238-4e1d-b517-605c4f8f2730'
 #--------------------------------------------------
-# Map Reduce Plan                                  
+# Map Reduce Plan
 #--------------------------------------------------
 MapReduce node: {scope-106
 Map Plan: {
@@ -147,7 +148,7 @@ Quantile file: {hdfs://kariz-1:9000/tmp/temp661924923/tmp-174642847}
 
 
 def test_collector():
-    collector = collector.Collector()
+    my_collector = collector.Collector()
     raw_execplan = '''
     DAG:'eaf51b30-f457-4bc7-97a7-c3462698cd73'
     #--------------------------------------------------
@@ -168,14 +169,28 @@ def test_collector():
     {{{Project[bytearray][4] - scope-97
     {{{Project[bytearray][5] - scope-99
     {{{a: Load(/pigmix1/pigmix_power_users:PigStorage('')) - scope-88}
-    
+
     Global sort: {false}
-    
+
     }
     '''
     objstore = objs.ObjectStore()
-    collector.objectstore = objstore
-    g = Graph.pigstr_to_graph(raw_execplan);
+    my_collector.objectstore = objstore
+    g = Graph.pigstr_to_graph(raw_execplan,objstore);
+    print(str(g))
+
+def test_spark_collector():
+    my_collector = collector.Collector()
+    raw_execplan = '''
+    (2) ShuffledRDD[21] at reduceByKey at <console>:24 []
+    +-(2) MapPartitionsRDD[20] at map at <console>:24 []
+        |  MapPartitionsRDD[19] at flatMap at <console>:24 []
+        |  README.md MapPartitionsRDD[18] at textFile at <console>:24 []
+        |  README.md HadoopRDD[17] at textFile at <console>:24 []
+    '''
+    objstore = objs.ObjectStore()
+    my_collector.objectstore = objstore
+    g = Graph.sparkstr_to_graph(raw_execplan);
     print(str(g))
 
 
@@ -183,7 +198,7 @@ def test_collector2():
     collector = collector.Collector()
     raw_execplan = '''DAG:'261c8b72-1aa1-4d05-b11c-9a04c6f2a58b'
 #--------------------------------------------------
-# Map Reduce Plan                                  
+# Map Reduce Plan
 #--------------------------------------------------
 MapReduce node: {scope-192
 Map Plan: {
@@ -466,9 +481,9 @@ def correct_statistics():
         stats_fn = 'job_runtime_stats.csv'
         runtime_stats_f = open(stats_fn,'a+');
         df.to_csv(stats_fn, header = False, index=False)
-        
+
     # open statistics file name
-    # read it line by lien 
+    # read it line by lien
 
 def statistics_checker():
     fname = 'job_runtime_stats.csv'
@@ -485,8 +500,8 @@ def statistics_checker():
         #df = pd.DataFrame(data=df_data,columns=df_header)
         #for index, row in df.iterrows():
         #    print(row[0])
-        
+
     # open statistics file name
-    # read it line by lien 
-    
-test_collector_alluxio()
+    # read it line by lien
+
+test_collector()
