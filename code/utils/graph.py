@@ -273,15 +273,31 @@ def sparkstr_to_graph(raw_execplan):
             else:
                 inputs.append('')
 
-    print(functions,outputs,inputs)
+    print(functions)
     print('\n')
     graph = {}
     for i in range(len(functions)):
-        graph[i] = {}
-        graph[i][outputs[i]] = [inputs[i]]
+        graph[i]={}
+        graph[i]['output'] = outputs[i]
+        graph[i]['inputs']=[]
+        if inputs[i]!='':
+            graph[i]['inputs'].append(inputs[i])
         if i>0:
-            graph[i][outputs[i]] += [outputs[i-1]]
+            graph[i]['inputs'].append(outputs[i-1])
     print(graph)
+    print('\n')
+    g = Graph(len(functions))
+    for v1 in graph:
+        for v2 in graph:
+            if v1 == v2: # and len(vertices) != 1:
+                g.add_new_job(v1)
+
+            g.config_inputs(v1, graph[v1]['inputs'])
+
+            for i in graph[v1]['inputs']:
+                if i in graph[v2]['output']:
+                    g.add_edge(v2, v1, 0)
+    return g
 
 
 

@@ -182,11 +182,24 @@ def test_collector():
 def test_spark_collector():
     my_collector = collector.Collector()
     raw_execplan = '''
-    (2) ShuffledRDD[21] at reduceByKey at <console>:24 []
-    +-(2) MapPartitionsRDD[20] at map at <console>:24 []
-        |  MapPartitionsRDD[19] at flatMap at <console>:24 []
-        |  README.md MapPartitionsRDD[18] at textFile at <console>:24 []
-        |  README.md HadoopRDD[17] at textFile at <console>:24 []
+    (8) MapPartitionsRDD[2] at map at IOCommon.scala:44 []
+ |  MapPartitionsRDD[1] at sequenceFile at IOCommon.scala:44 []
+ |  hdfs://sandbox.hortonworks.com:8020/HiBench/Wordcount/Input HadoopRDD[0] at sequenceFile at IOCommon.scala:44 []
+(8) MapPartitionsRDD[3] at flatMap at ScalaWordCount.scala:44 []
+ |  MapPartitionsRDD[2] at map at IOCommon.scala:44 []
+ |  MapPartitionsRDD[1] at sequenceFile at IOCommon.scala:44 []
+ |  hdfs://sandbox.hortonworks.com:8020/HiBench/Wordcount/Input HadoopRDD[0] at sequenceFile at IOCommon.scala:44 []
+(8) MapPartitionsRDD[4] at map at ScalaWordCount.scala:46 []
+ |  MapPartitionsRDD[3] at flatMap at ScalaWordCount.scala:44 []
+ |  MapPartitionsRDD[2] at map at IOCommon.scala:44 []
+ |  MapPartitionsRDD[1] at sequenceFile at IOCommon.scala:44 []
+ |  hdfs://sandbox.hortonworks.com:8020/HiBench/Wordcount/Input HadoopRDD[0] at sequenceFile at IOCommon.scala:44 []
+(8) ShuffledRDD[5] at reduceByKey at ScalaWordCount.scala:48 []
+ +-(8) MapPartitionsRDD[4] at map at ScalaWordCount.scala:46 []
+    |  MapPartitionsRDD[3] at flatMap at ScalaWordCount.scala:44 []
+    |  MapPartitionsRDD[2] at map at IOCommon.scala:44 []
+    |  MapPartitionsRDD[1] at sequenceFile at IOCommon.scala:44 []
+    |  hdfs://sandbox.hortonworks.com:8020/HiBench/Wordcount/Input HadoopRDD[0] at sequenceFile at IOCommon.scala:44 []
     '''
     objstore = objs.ObjectStore()
     my_collector.objectstore = objstore
