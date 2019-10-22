@@ -504,4 +504,4 @@ def statistics_checker():
     # open statistics file name
     # read it line by lien
 
-test_collector()
+test_spark_collector()

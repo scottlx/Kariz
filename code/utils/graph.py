@@ -256,9 +256,32 @@ def graph_id_to_graph(raw_execplan, objectstore):
           g.static_runtime(j, objectstore.tpch_runtime[g_id][g_ds][j]['remote'], objectstore.tpch_runtime[g_id][g_ds][j]['cached'])
        return g
 
-def sparkstr_to_graph(raw_execplan, objectstore):
+def sparkstr_to_graph(raw_execplan):
     ls = raw_execplan.split("\n")
     vertices= {}
+    functions = []
+    outputs = []
+    inputs = []
+    for i in reversed(range(len(ls))):
+        line = ls[i].split(' at ')
+        if len(line) ==3:
+            functions.append(line[1].strip())
+            io = line[0].split(')')[-1].split('|')[-1].strip().split(' ')
+            outputs.append(io[-1])
+            if(len(io)==2):
+                inputs.append(io[-2])
+            else:
+                inputs.append('')
+
+    print(functions,outputs,inputs)
+    print('\n')
+    graph = {}
+    for i in range(len(functions)):
+        graph[i] = {}
+        graph[i][outputs[i]] = [inputs[i]]
+        if i>0:
+            graph[i][outputs[i]] += [outputs[i-1]]
+    print(graph)
 
 
 
