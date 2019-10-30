@@ -27,8 +27,8 @@ class Graph:
         self.dag_id = uuid.uuid1()
         self.n_vertices = n_vertices
         self.jobs = {}
-        for i in range(0, n_vertices):
-            self.jobs[i] = jb.Job(i)
+        # for i in range(0, n_vertices):
+        #     self.jobs[i] = jb.Job(i)
 
         self.misestimated_jobs = np.zeros(2*n_vertices)
 
@@ -60,9 +60,8 @@ class Graph:
         graph_str = graph_str  + '", "n_vertices" : ' + str(self.n_vertices) + ', "mse_factor" : ' + str(self.mse_factor) + ', "name" : "' + str(self.name) + '"}'
         return graph_str
 
-    def add_new_job(self, value):
-        self.jobs[self.n_vertices] = jb.Job(self.n_vertices)
-        self.n_vertices+= 1
+    def add_new_job(self, v, name):
+        self.jobs[v] = jb.Job(v, name)
 
     def set_misestimated_jobs(self, mse_jobs):
         for i in range(0, self.n_vertices):
@@ -89,11 +88,11 @@ class Graph:
     def config_inputs(self, v, inputs):
         self.jobs[v].config_inputs(inputs)
 
-    def add_edge(self, src, dest, distance = 0):
+    def add_edge(self, src, dest, distance = 0, src_name = 'Undefined', dest_name = 'Undefined'):
         if src not in self.jobs:
-            self.add_new_job(src)
+            self.add_new_job(src, src_name)
         if dest not in self.jobs:
-            self.add_new_job(dest)
+            self.add_new_job(dest, dest_name)
         self.jobs[src].add_child(dest, distance)
         if src in self.leaves:
             self.leaves.remove(src)
@@ -290,13 +289,14 @@ def sparkstr_to_graph(raw_execplan):
     for v1 in graph:
         for v2 in graph:
             if v1 == v2: # and len(vertices) != 1:
-                g.add_new_job(v1)
-
-            g.config_inputs(v1, graph[v1]['inputs'])
+                g.add_new_job(v1, functions[v1])
+                # print(g.jobs[v1])
+                # print(graph[v1]['inputs'])
+                g.config_inputs(v1, graph[v1]['inputs'])
 
             for i in graph[v1]['inputs']:
                 if i in graph[v2]['output']:
-                    g.add_edge(v2, v1, 0)
+                    g.add_edge(v2, v1, 1, functions[v2], functions[v1])
     return g
 
 

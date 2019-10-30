@@ -1,16 +1,23 @@
-# Author: Trevor Nogues
 from collections import defaultdict
+import estimator.collector as collector
+import utils.job as jb
+import utils.graph
+
 class Graph:
     """
     A simple undirected, weighted graph
     """
 
-    def __init__(self, vertices):
+    def __init__(self, g):
+        self.V = g.n_vertices
         self.nodes = set()
         self.edges = {}
         self.distances = {}
-        self.V = vertices
         self.graph = defaultdict(list)
+        for j in g.jobs:
+            self.add_node(j)
+            for e, d in g.jobs[j].children.items():
+                self.add_edge(j, e, d)
 
     def add_node(self, value):
         self.nodes.add(value)
@@ -154,75 +161,3 @@ class Graph:
                 print("The longest route is ", longestRoute)
             else:
                 print("Error: Not a true DAG")
-
-# Tests
-
-# Example 1
-g = Graph(15)
-g.add_edge(0, 1, -4)
-g.add_edge(0, 2, -3)
-g.add_edge(0, 4,-11)
-g.add_edge(0,11, -1)
-g.add_edge(11,13,-1)
-g.add_edge(13,14,-1)
-g.add_edge(1, 3, -7)
-g.add_edge(1, 4, -1)
-g.add_edge(2, 5, -9)
-g.add_edge(3, 6, -2)
-g.add_edge(4, 6, -2)
-g.add_edge(5, 4, -1)
-g.add_edge(5, 6, -5)
-g.add_edge(7, 5, -5)
-g.add_edge(7, 8, -1)
-g.add_edge(9, 8, -4)
-g.add_edge(10,6, -6)
-g.add_edge(10,8,-12)
-g.add_edge(10,12,-5)
-g.add_edge(10,13,-4)
-print("\nResult for graph g: ")
-g.findAllPaths()
-
-# Example 2
-h = Graph(10)
-h.add_edge(0, 1, -1)
-h.add_edge(0, 2, -2)
-h.add_edge(0, 5, -3)
-h.add_edge(1, 2, -0)
-h.add_edge(1, 3, -8)
-h.add_edge(2, 3, -4)
-h.add_edge(2, 7, -5)
-h.add_edge(3, 4, -2)
-h.add_edge(6, 5, -3)
-h.add_edge(7, 9, -2)
-h.add_edge(8, 1, -7)
-print("\nResult for graph h: ")
-h.findAllPaths()
-
-# Example 3
-i = Graph(9)
-i.add_edge(0, 2, -1)
-i.add_edge(0, 4, -1)
-i.add_edge(0, 6, -1)
-i.add_edge(2, 1, -1)
-i.add_edge(4, 3, -1)
-i.add_edge(1, 7, -1)
-i.add_edge(1, 5, -2)
-i.add_edge(3, 5, -3)
-i.add_edge(8, 5, -1)
-print("\nResult for graph i: ")
-i.findAllPaths()
-
-# Example 4
-j = Graph(6)
-j.add_edge(0, 1, -1)
-j.add_edge(1, 2, -1)
-j.add_edge(2, 3, -1)
-j.add_edge(3, 4, -1)
-j.add_edge(4, 5, -1)
-print("\nResult for graph j: ")
-j.findAllPaths()
-
-# Compute runtime
-endTime = time.time()
-print("Time: ", endTime-startTime)
-# Output: 0.0033698081970214844
