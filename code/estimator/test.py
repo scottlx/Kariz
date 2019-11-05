@@ -191,7 +191,7 @@ def test_spark_collector():
 #     |  hdfs://sandbox.hortonworks.com:8020/HiBench/Wordcount/Input HadoopRDD[0] at sequenceFile at IOCommon.scala:44 []
 #     '''
     raw_execplan = '''
-    (8) PythonRDD[12] at collect at /Users/joe/Desktop/Spark_Source/spark/bin/wordcount.py:39 []
+(8) PythonRDD[12] at collect at /Users/joe/Desktop/Spark_Source/spark/bin/wordcount.py:39 []
  |  MapPartitionsRDD[11] at mapPartitions at PythonRDD.scala:133 []
  |  ShuffledRDD[10] at partitionBy at NativeMethodAccessorImpl.java:0 []
  +-(8) PairwiseRDD[9] at reduceByKey at /Users/joe/Desktop/Spark_Source/spark/bin/wordcount.py:31 []

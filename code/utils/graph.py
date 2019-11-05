@@ -266,7 +266,8 @@ def sparkstr_to_graph(raw_execplan):
         if len(line) ==3:
             functions.append(line[1].strip())
             io = line[0].split(')')[-1].split('|')[-1].strip().split(' ')
-            outputs.append(io[-1])
+            rddnum = int(io[-1].split('[')[1].split(']')[0])
+            outputs.append((rddnum, io[-1]))
             if(len(io)==2):
                 inputs.append(io[-2])
             else:
@@ -277,23 +278,22 @@ def sparkstr_to_graph(raw_execplan):
     graph = {}
     for i in range(len(functions)):
         graph[i]={}
-        graph[i]['output'] = outputs[i]
+        graph[i]['output'] = outputs[i][1]
         graph[i]['inputs']=[]
         if inputs[i]!='':
             graph[i]['inputs'].append(inputs[i])
-        if i>0:
-            graph[i]['inputs'].append(outputs[i-1])
+        inputrdd = [item for item in outputs if item[0] == (outputs[i][0]-1)]
+
+        if len(inputrdd) != 0:
+            graph[i]['inputs'].append((inputrdd[0][1]))
     print(graph)
     print('\n')
     g = Graph(len(functions))
+    for v in graph:
+        g.add_new_job(v, functions[v])
+        g.config_inputs(v, graph[v]['inputs'])
     for v1 in graph:
         for v2 in graph:
-            if v1 == v2: # and len(vertices) != 1:
-                g.add_new_job(v1, functions[v1])
-                # print(g.jobs[v1])
-                # print(graph[v1]['inputs'])
-                g.config_inputs(v1, graph[v1]['inputs'])
-
             for i in graph[v1]['inputs']:
                 if i in graph[v2]['output']:
                     g.add_edge(v2, v1, 1, functions[v2], functions[v1])
