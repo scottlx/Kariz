@@ -26,7 +26,8 @@ class Stage:
     
     def update_inputs(self, j):
         for f in j.inputs:
-            self.stage_inputs[f] = self.stage_inputs[f] if f in self.stage_inputs and self.stage_inputs[f] > j.inputs[f] else j.inputs[f] 
+            if f in self.stage_inputs:
+                self.stage_inputs[f] = self.stage_inputs[f] if f in self.stage_inputs and self.stage_inputs[f] > j.inputs[f] else j.inputs[f]
     
     def add_job(self, j):      
         self.jobs.append(j)

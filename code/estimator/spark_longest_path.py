@@ -135,7 +135,6 @@ class Graph:
         route.reverse()
         return route
 
-
     def findAllPaths(self):
         start, end = self.criticalNodes()
         for s in start:

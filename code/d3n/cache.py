@@ -39,7 +39,6 @@ class Cache:
             self.workers_index.append(w.id)
             self.workers[w.id] = w    
         _cache = self
-        
 
     def __str__(self):
         printstr = 'global status: { '
@@ -85,7 +84,6 @@ class Cache:
         self.update_mrd_table()
         print('MRD Prefetch plan:', pdata, ', global status:', self.global_status)
         return status.SUCCESS
-             
              
     def cache_mrd(self, data):
         cached = {}

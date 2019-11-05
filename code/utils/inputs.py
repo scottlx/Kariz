@@ -18,7 +18,7 @@ def prepare_tpc_metadata():
                '100G' : {}, '128G' : {}, '150G' : {}, '200G' : {},
                '256G' : {}, '300G' : {}}
 
-   df = pd.read_csv('/home/xun/Kariz/code/utils/inputs.csv')
+   df = pd.read_csv('/Users/gangwei/Desktop/ec528/Kariz/code/utils/inputs.csv')
    df['size'] = pd.to_numeric(df['size'])
    df['n_blocks'] = (df['size']/blocksize).apply(np.ceil).astype(int)
    working_set_size = df['n_blocks'].sum() # 393GB
@@ -39,7 +39,7 @@ def prepare_tpc_metadata():
 def prepare_tpc_runtimes():
    tpch_runtimes = {}
    tpcds_runtimes = {}
-   with open('/home/xun/Kariz/code/utils/tpchjobs.csv') as csvfile:
+   with open('/Users/gangwei/Desktop/ec528/Kariz/code/utils/tpchjobs.csv') as csvfile:
         readCSV = csv.reader(csvfile, delimiter=',')
         headers = next(readCSV, None)
         for row in readCSV:

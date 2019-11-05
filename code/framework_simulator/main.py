@@ -19,7 +19,13 @@ def test_sequential():
 def test_concurrent():
     workload = wkl.Workload()
     workload.start_multiple_dags_workload()
- 
+
+def test_spark():
+    workload = wkl.Workload()
+    workload.own_test()
+
+
+test_spark() 
 #test_sequential()
 #test_concurrent()
-test_misestimation()
+#test_misestimation()

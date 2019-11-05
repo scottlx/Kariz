@@ -72,7 +72,7 @@ class Graph:
             self.jobs[i].config_misestimated_runtimes(self.mse_factor)
 
     def set_misestimation_error(self, mse_factor):
-        self.mse_factor = mse_factor;
+        self.mse_factor = mse_factor
 
     # Randomly assign time value to each node
     def random_runtime(self):
@@ -86,7 +86,9 @@ class Graph:
         self.jobs[v].config_ntasks(n_tasks)
 
     def config_inputs(self, v, inputs):
-        self.jobs[v].config_inputs(inputs)
+        print("================", self.jobs)
+        if self.jobs:
+            self.jobs[v].config_inputs(inputs)
 
     def add_edge(self, src, dest, distance = 0, src_name = 'Undefined', dest_name = 'Undefined'):
         if src not in self.jobs:
@@ -286,7 +288,7 @@ def sparkstr_to_graph(raw_execplan):
 
         if len(inputrdd) != 0:
             graph[i]['inputs'].append((inputrdd[0][1]))
-    print(graph)
+    print(graph,"===GRAPH===")
     print('\n')
     g = Graph(len(functions))
     for v in graph:
@@ -311,7 +313,7 @@ def pigstr_to_graph(raw_execplan, objectstore):
     for x in ls:
         if x.startswith('DAG'):
             dag_id = x.split(':')[1]
-            print(dagid)
+            print(dag_id)
             dag_id.replace('\'', '')
 
 

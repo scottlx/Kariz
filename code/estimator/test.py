@@ -180,31 +180,34 @@ def test_collector():
     g = Graph.pigstr_to_graph(raw_execplan,objstore);
     print(str(g))
 
+
 def test_spark_collector():
     my_collector = collector.Collector()
-#     raw_execplan = '''
-# (8) ShuffledRDD[5] at reduceByKey at ScalaWordCount.scala:48 []
-#  +-(8) MapPartitionsRDD[4] at map at ScalaWordCount.scala:46 []
-#     |  MapPartitionsRDD[3] at flatMap at ScalaWordCount.scala:44 []
-#     |  MapPartitionsRDD[2] at map at IOCommon.scala:44 []
-#     |  MapPartitionsRDD[1] at sequenceFile at IOCommon.scala:44 []
-#     |  hdfs://sandbox.hortonworks.com:8020/HiBench/Wordcount/Input HadoopRDD[0] at sequenceFile at IOCommon.scala:44 []
-#     '''
     raw_execplan = '''
-(8) PythonRDD[12] at collect at /Users/joe/Desktop/Spark_Source/spark/bin/wordcount.py:39 []
- |  MapPartitionsRDD[11] at mapPartitions at PythonRDD.scala:133 []
- |  ShuffledRDD[10] at partitionBy at NativeMethodAccessorImpl.java:0 []
- +-(8) PairwiseRDD[9] at reduceByKey at /Users/joe/Desktop/Spark_Source/spark/bin/wordcount.py:31 []
-    |  PythonRDD[8] at reduceByKey at /Users/joe/Desktop/Spark_Source/spark/bin/wordcount.py:31 []
-    |  UnionRDD[7] at union at NativeMethodAccessorImpl.java:0 []
-    |  UnionRDD[4] at union at NativeMethodAccessorImpl.java:0 []
-    |  input1/*.txt MapPartitionsRDD[1] at textFile at NativeMethodAccessorImpl.java:0 []
-    |  input1/*.txt HadoopRDD[0] at textFile at NativeMethodAccessorImpl.java:0 []
-    |  input2/*.txt MapPartitionsRDD[3] at textFile at NativeMethodAccessorImpl.java:0 []
-    |  input2/*.txt HadoopRDD[2] at textFile at NativeMethodAccessorImpl.java:0 []
-    |  input3/*.txt MapPartitionsRDD[6] at textFile at NativeMethodAccessorImpl.java:0 []
-    |  input3/*.txt HadoopRDD[5] at textFile at NativeMethodAccessorImpl.java:0 []
+(8) ShuffledRDD[5] at reduceByKey at ScalaWordCount.scala:48 []
+ +-(8) MapPartitionsRDD[4] at map at ScalaWordCount.scala:46 []
+    |  MapPartitionsRDD[3] at flatMap at ScalaWordCount.scala:44 []
+    |  MapPartitionsRDD[2] at map at IOCommon.scala:44 []
+    |  MapPartitionsRDD[1] at sequenceFile at IOCommon.scala:44 []
+    |  hdfs://sandbox.hortonworks.com:8020/HiBench/Wordcount/Input HadoopRDD[0] at sequenceFile at IOCommon.scala:44 []
     '''
+#     raw_execplan = '''
+# (8) PythonRDD[12] at collect at /Users/joe/Desktop/Spark_Source/spark/bin/wordcount.py:39 []
+#  |  MapPartitionsRDD[11] at mapPartitions at PythonRDD.scala:133 []
+#  |  ShuffledRDD[10] at partitionBy at NativeMethodAccessorImpl.java:0 []
+#  +-(8) PairwiseRDD[9] at reduceByKey at /Users/joe/Desktop/Spark_Source/spark/bin/wordcount.py:31 []
+#     |  PythonRDD[8] at reduceByKey at /Users/joe/Desktop/Spark_Source/spark/bin/wordcount.py:31 []
+#     |  UnionRDD[7] at union at NativeMethodAccessorImpl.java:0 []
+#     |  UnionRDD[4] at union at NativeMethodAccessorImpl.java:0 []
+#     |  input1/*.txt MapPartitionsRDD[1] at textFile at NativeMethodAccessorImpl.java:0 []
+#     |  input1/*.txt HadoopRDD[0] at textFile at NativeMethodAccessorImpl.java:0 []
+#     |  input2/*.txt MapPartitionsRDD[3] at textFile at NativeMethodAccessorImpl.java:0 []
+#     |  input2/*.txt HadoopRDD[2] at textFile at NativeMethodAccessorImpl.java:0 []
+#     |  input3/*.txt MapPartitionsRDD[6] at textFile at NativeMethodAccessorImpl.java:0 []
+#     |  input3/*.txt HadoopRDD[5] at textFile at NativeMethodAccessorImpl.java:0 []
+#     '''
+
+
     objstore = objs.ObjectStore()
     my_collector.objectstore = objstore
     g = Graph.sparkstr_to_graph(raw_execplan)
@@ -475,7 +478,7 @@ Quantile file: {hdfs://kariz-1:9000/tmp/temp-111918155/tmp-1042434768}
     collector.submit_new_dag(raw_execplan)
 
 def correct_statistics():
-    fname = '../plans/kariz/job_runtime_stats.csv'
+    fname = 'job_runtime_stats.csv'
     with open(fname) as fd:
         data1 = fd.read().split('\n')
         del data1[-1]
@@ -522,4 +525,8 @@ def statistics_checker():
     # open statistics file name
     # read it line by lien
 
-test_spark_collector()
+
+if __name__ == "__main__":
+    test_spark_collector()
+    statistics_checker()
+    correct_statistics()
