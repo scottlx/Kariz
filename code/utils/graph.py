@@ -272,20 +272,17 @@ def sparkstr_to_graph(raw_execplan):
             outputs.append((rddnum, io[-1]))
             outputs_copy.append((rddnum, io[-1]))
             inputrdd = [item for item in outputs_copy if item[0] < rddnum]  #add all the smaller number rdds to input
-            input=[]
+            datasize= 1
+            input={}
             if len(inputrdd) != 0:
                 for item in inputrdd:
-                    input.append(item[1])
+                    input[item[1]] = datasize
                     outputs_copy.remove(item) #delete the rdd which has alread assinged as input to a node
 
             if(len(io)==2):            #add textFile to input
-                input.append(io[-2])
+                input[io[-2]] = datasize
             inputs.append(input)
 
-    print(functions)
-    print('\n')
-    print(inputs)
-    print('\n')
     graph = {}
     for i in range(len(functions)):
         graph[i]={}
