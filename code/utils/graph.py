@@ -86,7 +86,6 @@ class Graph:
         self.jobs[v].config_ntasks(n_tasks)
 
     def config_inputs(self, v, inputs):
-        print("================", self.jobs)
         if self.jobs:
             self.jobs[v].config_inputs(inputs)
 
@@ -262,6 +261,7 @@ def sparkstr_to_graph(raw_execplan):
     vertices= {}
     functions = []
     outputs = []
+    outputs_copy = []
     inputs = []
     for i in reversed(range(len(ls))):
         line = ls[i].split(' at ')
@@ -270,25 +270,28 @@ def sparkstr_to_graph(raw_execplan):
             io = line[0].split(')')[-1].split('|')[-1].strip().split(' ')
             rddnum = int(io[-1].split('[')[1].split(']')[0])
             outputs.append((rddnum, io[-1]))
-            if(len(io)==2):
-                inputs.append(io[-2])
-            else:
-                inputs.append('')
+            outputs_copy.append((rddnum, io[-1]))
+            inputrdd = [item for item in outputs_copy if item[0] < rddnum]  #add all the smaller number rdds to input
+            input=[]
+            if len(inputrdd) != 0:
+                for item in inputrdd:
+                    input.append(item[1])
+                    outputs_copy.remove(item) #delete the rdd which has alread assinged as input to a node
+
+            if(len(io)==2):            #add textFile to input
+                input.append(io[-2])
+            inputs.append(input)
 
     print(functions)
+    print('\n')
+    print(inputs)
     print('\n')
     graph = {}
     for i in range(len(functions)):
         graph[i]={}
         graph[i]['output'] = outputs[i][1]
-        graph[i]['inputs']=[]
-        if inputs[i]!='':
-            graph[i]['inputs'].append(inputs[i])
-        inputrdd = [item for item in outputs if item[0] == (outputs[i][0]-1)]
-
-        if len(inputrdd) != 0:
-            graph[i]['inputs'].append((inputrdd[0][1]))
-    print(graph,"===GRAPH===")
+        graph[i]['inputs']= inputs[i]
+    print(graph)
     print('\n')
     g = Graph(len(functions))
     for v in graph:
