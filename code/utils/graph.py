@@ -292,7 +292,7 @@ def sparkstr_to_graph(raw_execplan):
     print('\n')
     g = Graph(len(functions))
     for v in graph:
-        g.add_new_job(v, ‘“’ + functions[v] + ‘”’)
+        g.add_new_job(v, '"'+functions[v]+'"')
         g.config_inputs(v, graph[v]['inputs'])
     for v1 in graph:
         for v2 in graph:
@@ -376,13 +376,15 @@ def pigstr_to_graph(raw_execplan, objectstore):
 def jsonstr_to_graph(raw_execplan):
     raw_dag = ast.literal_eval(raw_execplan)
     jobs = raw_dag['jobs']
+    # functionname = raw_dag['function_name']
     n_vertices = raw_dag['n_vertices']
     g = Graph(n_vertices)
     g.dag_id = raw_dag['uuid']
     g.mse_factor = raw_dag['mse_factor']
     g.name = raw_dag['name']
     for j in jobs:
-        g.jobs[j['id']].id = j['id']
+        g.jobs[j['id']] = jb.Job('id', j['function_name'])
+        #g.jobs[j['id']].id = j['id']
         g.jobs[j['id']].static_runtime(j['runtime_remote'], j['runtime_cache'])
         g.jobs[j['id']].set_misestimation(j['remote_misestimation'], j['cache_misestimation'])
         g.jobs[j['id']].config_ntasks(j['num_task'])
