@@ -292,7 +292,7 @@ def sparkstr_to_graph(raw_execplan):
     print('\n')
     g = Graph(len(functions))
     for v in graph:
-        g.add_new_job(v, functions[v])
+        g.add_new_job(v, ‘“’ + functions[v] + ‘”’)
         g.config_inputs(v, graph[v]['inputs'])
     for v1 in graph:
         for v2 in graph:
