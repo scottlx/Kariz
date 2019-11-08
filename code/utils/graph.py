@@ -23,18 +23,22 @@ class Type(enum.Enum):
 
 #Class to represent a graph
 class Graph:
-    def __init__(self, n_vertices = 0, type = Type.complex):
+    def __init__(self, n_vertices=0, type=Type.complex):
         self.dag_id = uuid.uuid1()
-        self.n_vertices = n_vertices
-        self.jobs = {}
+        self.n_vertices = n_vertices####
+        self.jobs = {}####
         # for i in range(0, n_vertices):
         #     self.jobs[i] = jb.Job(i)
 
         self.misestimated_jobs = np.zeros(2*n_vertices)
 
-        self.roots = set(range(0, n_vertices))
-        self.leaves = set(range(0, n_vertices))
+        self.roots = set(range(0, n_vertices))###
+        self.leaves = set(range(0, n_vertices))###
         self.blevels = {}
+
+
+        ## self.edges
+
 
         self.mse_factor = 0
         self.plans_container = None
@@ -82,6 +86,9 @@ class Graph:
     def static_runtime(self, v, runtime_remote, runtime_cache):
         self.jobs[v].static_runtime(runtime_remote, runtime_cache)
 
+    def get_sum_static_runtime(self, v):
+        return self.jobs[v]
+
     def config_ntasks(self, v, n_tasks):
         self.jobs[v].config_ntasks(n_tasks)
 
@@ -89,7 +96,7 @@ class Graph:
         if self.jobs:
             self.jobs[v].config_inputs(inputs)
 
-    def add_edge(self, src, dest, distance = 0, src_name = 'Undefined', dest_name = 'Undefined'):
+    def add_edge(self, src, dest, distance, src_name = 'Undefined', dest_name = 'Undefined'):
         if src not in self.jobs:
             self.add_new_job(src, src_name)
         if dest not in self.jobs:
@@ -233,14 +240,31 @@ class Graph:
 
 
 def str_to_graph(raw_execplan, objectstore):
+    """
+    NEED SPARK
+    :param raw_execplan: 
+    :param objectstore: 
+    :return: 
+    """
+    # g = None
+    #     # if raw_execplan.startswith('DAG'):
+    #     #     g = pigstr_to_graph(raw_execplan, objectstore)
+    #     # elif raw_execplan.startswith('ID'):
+    #     #     g = graph_id_to_graph(raw_execplan, objectstore)
+    #     # else:
+    #     #     g = jsonstr_to_graph(raw_execplan)
     g = None
-    if raw_execplan.startswith('DAG'):
-        g = pigstr_to_graph(raw_execplan, objectstore)
-    elif raw_execplan.startswith('ID'):
-        g = graph_id_to_graph(raw_execplan, objectstore)
+    if raw_execplan.startswith('SPARK'):
+        g = sparkstr_to_graph(raw_execplan, objectstore)
     else:
         g = jsonstr_to_graph(raw_execplan)
-    return g;
+
+
+    # g = None
+    # if raw_execplan.startswith('SPARK'):
+    # g = sparkstr_to_graph(raw_execplan, objectstore)
+
+    return g
 
 def graph_id_to_graph(raw_execplan, objectstore):
     import framework_simulator.tpc as tpc
@@ -256,7 +280,7 @@ def graph_id_to_graph(raw_execplan, objectstore):
           g.static_runtime(j, objectstore.tpch_runtime[g_id][g_ds][j]['remote'], objectstore.tpch_runtime[g_id][g_ds][j]['cached'])
        return g
 
-def sparkstr_to_graph(raw_execplan):
+def sparkstr_to_graph(raw_execplan, objectstore):
     ls = raw_execplan.split("\n")
     vertices= {}
     functions = []
@@ -265,7 +289,7 @@ def sparkstr_to_graph(raw_execplan):
     inputs = []
     for i in reversed(range(len(ls))):
         line = ls[i].split(' at ')
-        if len(line) ==3:
+        if len(line) == 3:
             functions.append(line[1].strip())
             io = line[0].split(')')[-1].split('|')[-1].strip().split(' ')
             rddnum = int(io[-1].split('[')[1].split(']')[0])
@@ -288,17 +312,27 @@ def sparkstr_to_graph(raw_execplan):
         graph[i]={}
         graph[i]['output'] = outputs[i][1]
         graph[i]['inputs']= inputs[i]
-    print(graph)
-    print('\n')
+    # print(graph)
+    # print('\n')
     g = Graph(len(functions))
     for v in graph:
         g.add_new_job(v, '"'+functions[v]+'"')
         g.config_inputs(v, graph[v]['inputs'])
+    for i in range(len(graph)):
+        g.static_runtime(i, random.random()+1, random.random())
     for v1 in graph:
         for v2 in graph:
+            # v1_to_v2 =
             for i in graph[v1]['inputs']:
                 if i in graph[v2]['output']:
-                    g.add_edge(v2, v1, 1, functions[v2], functions[v1])
+                    # g.add_edge(v2, v1, 1, functions[v2], functions[v1])
+                    _remote = g.get_sum_static_runtime(v1).runtime_remote
+                    _cache = g.get_sum_static_runtime(v1).runtime_cache
+                    g.add_edge(v2, v1, _cache + _remote, functions[v2], functions[v1])
+
+                    # print(g.get_sum_static_runtime(v1).runtime_remote, v1, "=======")
+
+    print(str(g))
     return g
 
 
